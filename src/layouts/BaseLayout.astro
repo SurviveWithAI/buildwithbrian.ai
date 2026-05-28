@@ -12,18 +12,19 @@ export interface Props {
   canonical?: string;
 }
 
+import '../styles/global.css';
+
 const {
   title = "Brian Phillips | AI Survivalist — buildwithbrian.ai",
   description = "Rapid AI prototyping and practical tools built exclusively with Grok Build. AI Survivalist — Adapt. Survive. Thrive. In the age of AI.",
   image = "/og-image.jpg",
-  canonical = "https://buildwithbrian.ai",
+  canonical = "https://survivewithai.github.io/buildwithbrian.ai",
 } = Astro.props;
 
-const siteUrl = "https://buildwithbrian.ai";
-const fullImage = image.startsWith("http") ? image : `${siteUrl}${image}`;
+const siteUrl = import.meta.env.SITE || 'https://survivewithai.github.io';
+const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+const fullImage = image.startsWith("http") ? image : `${siteUrl}${base}${image}`;
 const currentYear = new Date().getFullYear();
-
-import '../styles/global.css';
 ---
 
 <!doctype html>
@@ -64,9 +65,9 @@ import '../styles/global.css';
     <meta name="twitter:site" content="@survivewithai" />
 
     <!-- Favicons -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={`${base}/favicon.svg`} />
+    <link rel="icon" type="image/x-icon" href={`${base}/favicon.ico`} />
+    <link rel="apple-touch-icon" href={`${base}/favicon.svg`} />
 
     <!-- Preconnect for performance (future external assets) -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
