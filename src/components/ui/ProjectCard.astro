@@ -22,7 +22,7 @@ const { project } = Astro.props;
   <!-- Thumbnail -->
   <div class="relative h-48 bg-[#0a0a0a] overflow-hidden border-b border-border-subtle">
     <img 
-      src={`/images/projects/${project.id}.webp`} 
+      src={`${import.meta.env.BASE_URL}images/projects/${project.id}.webp`} 
       alt={`${project.title} — cyberpunk visualization`}
       class="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:scale-[1.03] transition-transform duration-500"
       loading="lazy"
