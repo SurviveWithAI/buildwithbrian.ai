@@ -139,6 +139,12 @@
       packets = [];
     }
 
+    // More robust resizing for hero canvas
+    const resizeObserver = new ResizeObserver(() => {
+      resize();
+    });
+    resizeObserver.observe(canvas);
+
     // Mouse state
     let mouseX = width * 0.5;
     let mouseY = height * 0.42;
