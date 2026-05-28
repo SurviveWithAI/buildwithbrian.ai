@@ -1,0 +1,75 @@
+---
+/**
+ * ProjectCard.astro
+ * Cyberpunk project card used in the Featured Builds grid.
+ * Expects a Project object from src/data/projects.ts
+ */
+
+import type { Project } from '../../data/projects';
+
+export interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+---
+
+<button 
+  class="cyber-card group w-full text-left p-0 overflow-hidden flex flex-col h-full focus:outline-none focus:ring-2 focus:ring-cyan focus:ring-offset-2 focus:ring-offset-void"
+  data-project-id={project.id}
+  aria-label={`View details for ${project.title}`}
+>
+  <!-- Thumbnail -->
+  <div class="relative h-48 bg-[#0a0a0a] overflow-hidden border-b border-border-subtle">
+    <img 
+      src={`/images/projects/${project.id}.webp`} 
+      alt={`${project.title} — cyberpunk visualization`}
+      class="absolute inset-0 w-full h-full object-cover opacity-90 group-hover:scale-[1.03] transition-transform duration-500"
+      loading="lazy"
+      width="900"
+      height="492"
+    />
+
+    <!-- Subtle overlays for depth + title treatment -->
+    <div class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/30 to-transparent"></div>
+    <div class="absolute inset-0 scanlines opacity-40"></div>
+
+    <!-- Title treatment on image (high impact) -->
+    <div class="absolute bottom-0 left-0 right-0 px-4 pb-3 z-10">
+      <div class="text-white text-sm font-semibold tracking-[-0.3px] drop-shadow-lg">{project.title}</div>
+    </div>
+
+    <!-- "Built with Grok Build" badge -->
+    <div class="absolute top-3 right-3 z-10">
+      <div class="grok-badge cyber-badge text-[9px] px-2.5 py-px">BUILT WITH GROK BUILD</div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="p-6 flex-1 flex flex-col">
+    <div class="flex items-start justify-between gap-3 mb-3">
+      <h3 class="font-semibold text-xl tracking-[-0.4px] text-white group-hover:text-cyan transition-colors leading-tight">
+        {project.title}
+      </h3>
+      <span class="text-[10px] font-mono px-2 py-0.5 rounded border border-teal/40 text-teal/80 whitespace-nowrap mt-1">
+        {project.category}
+      </span>
+    </div>
+
+    <p class="text-secondary text-[14.5px] leading-snug line-clamp-3 mb-5 flex-1">
+      {project.shortDesc}
+    </p>
+
+    <!-- Tech tags -->
+    <div class="flex flex-wrap gap-1.5 mt-auto">
+      {project.tech.slice(0, 4).map((tech) => (
+        <span class="text-[10px] font-mono px-2 py-0.5 bg-card border border-border-subtle text-secondary/80 rounded">
+          {tech}
+        </span>
+      ))}
+      {project.tech.length > 4 && (
+        <span class="text-[10px] font-mono px-2 py-0.5 text-muted">+{project.tech.length - 4}</span>
+      )}
+    </div>
+  </div>
+</button>

@@ -22,3 +22,18 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# OS & editor noise
+.DS_Store
+*.swp
+*.swo
+.vscode/*
+!.vscode/extensions.json
+
+# Local image generation artifacts (if using tools locally)
+*.tmp.png
+generated-assets/
+
+# Optional: local testing
+.netlify/
+.vercel/

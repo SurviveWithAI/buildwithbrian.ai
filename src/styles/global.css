@@ -1,0 +1,552 @@
+@import "tailwindcss";
+
+/* =========================================================
+   BUILDWITHBRIAN.AI — CYBERPUNK DESIGN SYSTEM (Tailwind v4)
+   Deep space / electric neon aesthetic. All custom effects
+   are hand-crafted, zero external dependencies.
+   ========================================================= */
+
+/* ---------- CSS Variables (source of truth) ---------- */
+:root {
+  /* Backgrounds */
+  --bg-void: #0a0a0a;
+  --bg-elevated: #111111;
+  --bg-card: #161616;
+  --bg-subtle: #1a1a1a;
+
+  /* Text */
+  --text-primary: #f5f5f5;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+
+  /* Neon Accents (exact brand) */
+  --accent-cyan: #00f5ff;
+  --accent-teal: #00d4aa;
+  --accent-green: #22c55e;
+  --accent-purple: #a78bfa;
+
+  /* Borders & Lines */
+  --border-subtle: #262626;
+  --border-neon: #00f5ff;
+
+  /* Glows - tuned for premium cyberpunk depth */
+  --glow-cyan: 0 0 8px #00f5ff, 0 0 22px rgba(0, 245, 255, 0.38);
+  --glow-teal: 0 0 8px #00d4aa, 0 0 22px rgba(0, 212, 170, 0.38);
+  --glow-green: 0 0 8px #22c55e, 0 0 22px rgba(34, 197, 94, 0.38);
+  --glow-cyan-strong: 0 0 12px #00f5ff, 0 0 32px rgba(0, 245, 255, 0.5), 0 0 55px rgba(0, 245, 255, 0.22);
+
+  /* Typography */
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* Spacing rhythm (4px base) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+}
+
+/* ---------- Tailwind Theme Extension ---------- */
+@theme inline {
+  --color-void: #0a0a0a;
+  --color-elevated: #111111;
+  --color-card: #161616;
+  --color-cyan: #00f5ff;
+  --color-teal: #00d4aa;
+  --color-matrix: #22c55e;
+  --color-purple: #a78bfa;
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  --shadow-neon-cyan: var(--glow-cyan);
+  --shadow-neon-teal: var(--glow-teal);
+  --shadow-neon-green: var(--glow-green);
+
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+}
+
+/* ---------- Base Reset & Cosmic Feel ---------- */
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-void);
+  color: var(--text-primary);
+  line-height: 1.65;
+  letter-spacing: -0.01em;
+}
+
+/* Razor-sharp headings */
+h1, h2, h3, h4 {
+  font-feature-settings: "tnum" 1, "ss01" 1;
+  letter-spacing: -0.03em;
+}
+
+/* Selection (neon highlight) */
+::selection {
+  background-color: #00f5ff;
+  color: #0a0a0a;
+  text-shadow: none;
+}
+
+/* Thin neon scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #111111;
+}
+::-webkit-scrollbar-thumb {
+  background: #00f5ff;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #00d4aa;
+}
+
+/* ---------- Core Neon & Cyberpunk Effects ---------- */
+
+/* Multi-layer neon glow utilities */
+.neon-cyan {
+  color: var(--accent-cyan);
+  text-shadow: var(--glow-cyan);
+}
+
+.neon-teal {
+  color: var(--accent-teal);
+  text-shadow: var(--glow-teal);
+}
+
+.neon-green {
+  color: var(--accent-green);
+  text-shadow: var(--glow-green);
+}
+
+.neon-border-cyan {
+  border-color: var(--accent-cyan);
+  box-shadow: var(--glow-cyan);
+}
+
+.neon-border-teal {
+  border-color: var(--accent-teal);
+  box-shadow: var(--glow-teal);
+}
+
+/* Cyberpunk Card — the workhorse */
+.cyber-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  transition: transform 180ms cubic-bezier(0.23, 1, 0.32, 1),
+              border-color 180ms ease,
+              box-shadow 220ms ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.cyber-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-cyan);
+  box-shadow: var(--glow-cyan);
+}
+
+.cyber-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -100%;
+  width: 50%;
+  height: 200%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(0, 245, 255, 0.06),
+    transparent
+  );
+  transition: left 600ms;
+  pointer-events: none;
+}
+
+.cyber-card:hover::after {
+  left: 250%;
+}
+
+/* Glitch Effect (subtle, high-signal, used on headings + badges) */
+.glitch {
+  position: relative;
+  display: inline-block;
+  color: inherit;
+}
+
+.glitch:hover {
+  animation: glitch-skew 120ms linear infinite;
+}
+
+.glitch:hover::before,
+.glitch:hover::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  overflow: hidden;
+  white-space: pre;
+  pointer-events: none;
+}
+
+.glitch:hover::before {
+  left: 2.5px;
+  text-shadow: -1px 0 var(--accent-cyan);
+  animation: glitch-anim 85ms linear infinite;
+  clip-path: polygon(0 0, 100% 0, 100% 38%, 0 38%);
+}
+
+.glitch:hover::after {
+  left: -2px;
+  text-shadow: 1.5px 0 var(--accent-green);
+  animation: glitch-anim 125ms linear infinite reverse;
+  clip-path: polygon(0 62%, 100% 62%, 100% 100%, 0 100%);
+}
+
+@keyframes glitch-anim {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 1px); }
+  40% { transform: translate(-1px, -1px); }
+  60% { transform: translate(2px, 1px); }
+  80% { transform: translate(1px, -2px); }
+  100% { transform: translate(0); }
+}
+
+@keyframes glitch-skew {
+  0% { transform: skew(0deg); }
+  20% { transform: skew(1.5deg); }
+  40% { transform: skew(-0.8deg); }
+  60% { transform: skew(1.2deg); }
+  80% { transform: skew(-1.1deg); }
+  100% { transform: skew(0deg); }
+}
+
+/* Scanlines (hero + section overlays) */
+.scanlines {
+  position: relative;
+}
+
+.scanlines::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 3px,
+    rgba(0, 0, 0, 0.18) 3px,
+    rgba(0, 0, 0, 0.18) 4px
+  );
+  pointer-events: none;
+  z-index: 1;
+  mix-blend-mode: multiply;
+}
+
+/* Subtle matrix / data rain overlay (very faint) */
+.matrix-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(34, 197, 94, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 197, 94, 0.035) 1px, transparent 1px);
+  background-size: 38px 38px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+
+/* Section reveal (IntersectionObserver driven) */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 420ms cubic-bezier(0.23, 1, 0.32, 1),
+              transform 520ms cubic-bezier(0.23, 1, 0.32, 1);
+  will-change: opacity, transform;
+}
+
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger support via style attribute or data-delay */
+.reveal.delay-1 { transition-delay: 40ms; }
+.reveal.delay-2 { transition-delay: 80ms; }
+.reveal.delay-3 { transition-delay: 120ms; }
+.reveal.delay-4 { transition-delay: 160ms; }
+
+/* ---------- Buttons (Neon CTAs) ---------- */
+.neon-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: 1px solid var(--accent-cyan);
+  color: var(--accent-cyan);
+  background: transparent;
+  transition: all 140ms cubic-bezier(0.23, 1, 0.32, 1);
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.neon-btn:hover {
+  background: rgba(0, 245, 255, 0.08);
+  box-shadow: var(--glow-cyan);
+  color: #fff;
+  border-color: var(--accent-cyan);
+}
+
+.neon-btn:active {
+  transform: scale(0.985);
+}
+
+.neon-btn-teal {
+  border-color: var(--accent-teal);
+  color: var(--accent-teal);
+}
+
+.neon-btn-teal:hover {
+  background: rgba(0, 212, 170, 0.08);
+  box-shadow: var(--glow-teal);
+  color: #fff;
+  border-color: var(--accent-teal);
+}
+
+/* Small pill badge */
+.cyber-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.125rem 0.625rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1px solid var(--accent-green);
+  color: var(--accent-green);
+  background: rgba(34, 197, 94, 0.06);
+  border-radius: 9999px;
+  white-space: nowrap;
+}
+
+/* "Built with Grok Build" special variant */
+.grok-badge {
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  background: rgba(0, 245, 255, 0.06);
+}
+
+/* ---------- Filters & Pills ---------- */
+.filter-pill {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  padding: 0.375rem 0.875rem;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  background: transparent;
+  transition: all 120ms ease;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+}
+
+.filter-pill:hover {
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+}
+
+.filter-pill.active {
+  background: rgba(0, 245, 255, 0.1);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  box-shadow: 0 0 0 1px rgba(0, 245, 255, 0.2);
+}
+
+/* ---------- Timeline Steps ---------- */
+.timeline-step {
+  position: relative;
+}
+
+.timeline-step::before {
+  content: '';
+  position: absolute;
+  left: 1.25rem;
+  top: 2.75rem;
+  bottom: -1.25rem;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--accent-cyan), transparent);
+}
+
+.timeline-step:last-child::before {
+  display: none;
+}
+
+.timeline-node {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 2px solid var(--accent-cyan);
+  background: var(--bg-void);
+  box-shadow: var(--glow-cyan);
+  transition: all 200ms ease;
+}
+
+.timeline-step:hover .timeline-node {
+  border-color: var(--accent-teal);
+  box-shadow: var(--glow-teal);
+  transform: scale(1.05);
+}
+
+/* ---------- Modal (lightweight, accessible) ---------- */
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(10, 10, 10, 0.92);
+  backdrop-filter: blur(6px);
+}
+
+.modal.open {
+  display: flex;
+}
+
+.modal-content {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-subtle);
+  max-width: 860px;
+  width: 100%;
+  max-height: 92vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 25px 60px -15px rgb(0 0 0 / 0.6),
+              0 0 0 1px rgba(0, 245, 255, 0.1);
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 2.25rem;
+  height: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  transition: color 120ms ease;
+  z-index: 10;
+}
+
+.modal-close:hover {
+  color: var(--accent-cyan);
+}
+
+/* ---------- Stack Icons & Grid ---------- */
+.stack-item {
+  transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1),
+              box-shadow 160ms ease;
+}
+
+.stack-item:hover {
+  transform: translateY(-3px);
+}
+
+.stack-item:hover .stack-icon {
+  filter: drop-shadow(0 0 6px currentColor);
+}
+
+/* ---------- Insights Cards ---------- */
+.insight-card {
+  transition: all 180ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.insight-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--accent-teal);
+}
+
+.insight-card:hover .insight-title {
+  color: var(--accent-teal);
+  text-shadow: 0 0 8px rgba(0, 212, 170, 0.4);
+}
+
+/* ---------- Footer Matrix Micro Effect ---------- */
+.footer-matrix {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  color: rgba(34, 197, 94, 0.15);
+  user-select: none;
+  pointer-events: none;
+}
+
+/* ---------- Reduced Motion Respect ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .cyber-card,
+  .neon-btn,
+  .glitch,
+  .timeline-node,
+  .stack-item,
+  .insight-card {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  .scanlines::before {
+    display: none;
+  }
+}
+
+/* ---------- Focus Styles (Accessible) ---------- */
+:focus-visible {
+  outline: 2px solid var(--accent-cyan);
+  outline-offset: 3px;
+}
+
+/* Small utility for terminal-style code blocks in modals */
+.terminal {
+  font-family: var(--font-mono);
+  background: #0a0a0a;
+  border: 1px solid #222;
+  padding: 1rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+/* Responsive typography scaling */
+@media (max-width: 640px) {
+  .hero-title {
+    font-size: clamp(2.75rem, 12vw, 4.25rem) !important;
+    line-height: 0.92 !important;
+  }
+}

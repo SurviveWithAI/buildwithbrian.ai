@@ -1,0 +1,67 @@
+---
+/**
+ * Footer.astro
+ * Connect section + final micro footer bar.
+ * Strong disclaimer, prominent social links, and subtle matrix signature.
+ */
+---
+
+<!-- CONNECT / FOOTER -->
+<section id="connect" class="relative py-20 bg-elevated border-t border-border-subtle">
+  <div class="max-w-4xl mx-auto px-6 text-center">
+    <div class="reveal">
+      <div class="uppercase tracking-[4.5px] text-xs text-cyan mb-4">END TRANSMISSION</div>
+      <h2 class="text-5xl md:text-6xl font-semibold tracking-[-2.6px] mb-6 leading-tight">
+        Let’s build something<br>that survives the future.
+      </h2>
+      <p class="max-w-md mx-auto text-secondary text-lg mb-10">
+        I’m always interested in sharp collaborations and impossible problems.
+      </p>
+    </div>
+
+    <!-- Primary CTAs -->
+    <div class="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+      <a 
+        href="https://x.com/survivewithai" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        class="neon-btn px-10 py-4 text-base tracking-[1px]"
+      >
+        MESSAGE ME ON X
+      </a>
+      <a 
+        href="mailto:brian@buildwithbrian.ai" 
+        class="neon-btn-teal px-10 py-4 text-base tracking-[1px]"
+      >
+        EMAIL ME
+      </a>
+    </div>
+
+    <!-- Strong Disclaimer -->
+    <div class="pt-8 border-t border-border-subtle max-w-2xl mx-auto">
+      <p class="text-xs md:text-sm text-muted leading-relaxed">
+        All content, tools, and this website itself were created exclusively using 
+        <span class="text-cyan">Grok Build by xAI</span>. 
+        This is an independent project and is not affiliated with, endorsed by, or sponsored by xAI.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Final Micro Footer Bar -->
+<footer class="border-t border-border-subtle py-6 text-center relative overflow-hidden">
+  <div class="max-w-5xl mx-auto px-6">
+    <div class="flex flex-col md:flex-row items-center justify-center gap-x-4 gap-y-2 text-[10px] font-mono tracking-[2.5px] text-muted">
+      <div>© {new Date().getFullYear()} BRIAN PHILLIPS</div>
+      <div class="hidden md:block opacity-40">•</div>
+      <div class="flex items-center gap-x-1.5">
+        BUILT IN THE VOID WITH GROK BUILD
+      </div>
+      <div class="hidden md:block opacity-40">•</div>
+      <div class="footer-matrix select-none">01001000 01001001 01000111 01001000 00100000 01010011 01001001 01000111 01001110 01000001 01001100</div>
+    </div>
+  </div>
+
+  <!-- Very subtle bottom matrix scan effect -->
+  <div class="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-cyan/10 to-transparent"></div>
+</footer>

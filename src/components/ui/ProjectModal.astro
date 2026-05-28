@@ -1,0 +1,201 @@
+---
+/**
+ * ProjectModal.astro
+ * Accessible, beautiful modal for project details.
+ * Designed with strong cyberpunk / high-signal aesthetic.
+ */
+
+import type { Project } from '../../data/projects';
+---
+
+<div 
+  id="project-modal" 
+  class="modal hidden"
+  role="dialog" 
+  aria-modal="true" 
+  aria-labelledby="modal-title"
+>
+  <div class="modal-content mx-auto w-full max-w-[920px] rounded-lg overflow-hidden">
+    <!-- Header -->
+    <div class="sticky top-0 z-10 flex items-center justify-between bg-elevated border-b border-border-subtle px-8 py-5">
+      <div class="flex items-center gap-x-4">
+        <div id="modal-category" 
+             class="text-xs font-mono tracking-[2px] px-3 py-1 border border-teal/50 text-teal rounded"></div>
+        <div id="modal-date" class="text-xs font-mono text-muted"></div>
+      </div>
+
+      <button 
+        id="modal-close" 
+        class="modal-close text-2xl leading-none text-secondary hover:text-white transition-colors"
+        aria-label="Close project details"
+      >
+        ✕
+      </button>
+    </div>
+
+    <div class="p-8 md:p-10 space-y-8">
+      <!-- Title + Badge -->
+      <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-y-4">
+        <h2 id="modal-title" class="text-4xl md:text-5xl font-semibold tracking-[-1.8px] text-white leading-none"></h2>
+        
+        <div id="modal-grok-badge" 
+             class="grok-badge cyber-badge self-start md:self-auto text-xs px-4 py-1 mt-1 whitespace-nowrap">
+          BUILT WITH GROK BUILD
+        </div>
+      </div>
+
+      <!-- Short description -->
+      <p id="modal-short-desc" class="text-xl text-secondary max-w-3xl"></p>
+
+      <!-- Problem -->
+      <div>
+        <div class="uppercase tracking-[3px] text-xs text-cyan mb-3">THE PROBLEM</div>
+        <div id="modal-problem" class="text-[15px] text-secondary leading-relaxed"></div>
+      </div>
+
+      <!-- How Grok Build Was Used -->
+      <div class="bg-card border border-cyan/20 p-7 rounded">
+        <div class="uppercase tracking-[3px] text-xs text-cyan mb-3">HOW GROK BUILD WAS USED</div>
+        <div id="modal-grok-role" class="text-[15px] text-secondary leading-relaxed"></div>
+      </div>
+
+      <!-- Results -->
+      <div>
+        <div class="uppercase tracking-[3px] text-xs text-cyan mb-3">RESULTS</div>
+        <ul id="modal-results" class="space-y-2 text-[15px]"></ul>
+      </div>
+
+      <!-- Tech Stack -->
+      <div>
+        <div class="uppercase tracking-[3px] text-xs text-cyan mb-3">TECH STACK</div>
+        <div id="modal-tech" class="flex flex-wrap gap-2"></div>
+      </div>
+
+      <!-- Action Links -->
+      <div id="modal-links" class="flex flex-wrap gap-3 pt-4 border-t border-border-subtle">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Lightweight accessible modal controller
+  let currentProject: any = null;
+
+  const modal = document.getElementById('project-modal') as HTMLDivElement;
+  const closeBtn = document.getElementById('modal-close') as HTMLButtonElement;
+
+  function openModal(project: any) {
+    currentProject = project;
+
+    // Populate content
+    document.getElementById('modal-title')!.textContent = project.title;
+    document.getElementById('modal-short-desc')!.textContent = project.shortDesc;
+    document.getElementById('modal-category')!.textContent = project.category.toUpperCase();
+    document.getElementById('modal-date')!.textContent = project.date;
+    document.getElementById('modal-problem')!.textContent = project.problem;
+    document.getElementById('modal-grok-role')!.textContent = project.grokRole;
+
+    // Results
+    const resultsList = document.getElementById('modal-results')!;
+    resultsList.innerHTML = project.results
+      .map((r: string) => `<li class="flex gap-3"><span class="text-matrix mt-1">▸</span> <span>${r}</span></li>`)
+      .join('');
+
+    // Tech
+    const techContainer = document.getElementById('modal-tech')!;
+    techContainer.innerHTML = project.tech
+      .map((t: string) => `<span class="text-xs font-mono px-3 py-1 bg-void border border-border-subtle rounded text-secondary">${t}</span>`)
+      .join('');
+
+    // Links
+    const linksContainer = document.getElementById('modal-links')!;
+    linksContainer.innerHTML = '';
+
+    const linkClasses = 'neon-btn !text-xs px-6 py-2.5';
+
+    if (project.demoUrl) {
+      const a = document.createElement('a');
+      a.href = project.demoUrl;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.className = linkClasses;
+      a.textContent = 'VIEW LIVE DEMO';
+      linksContainer.appendChild(a);
+    }
+
+    if (project.repoUrl) {
+      const a = document.createElement('a');
+      a.href = project.repoUrl;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.className = 'neon-btn-teal !text-xs px-6 py-2.5';
+      a.textContent = 'VIEW SOURCE CODE';
+      linksContainer.appendChild(a);
+    }
+
+    if (project.xUrl) {
+      const a = document.createElement('a');
+      a.href = project.xUrl;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      a.className = linkClasses;
+      a.textContent = 'READ THE THREAD ON X';
+      linksContainer.appendChild(a);
+    }
+
+    // Show modal
+    modal.classList.remove('hidden');
+    modal.classList.add('open');
+    document.body.style.overflow = 'hidden';
+
+    // Focus management
+    closeBtn.focus();
+  }
+
+  function closeModal() {
+    modal.classList.remove('open');
+    modal.classList.add('hidden');
+    document.body.style.overflow = '';
+
+    // Return focus to the card that opened it (if possible)
+    const trigger = document.querySelector(`[data-project-id="${currentProject?.id}"]`) as HTMLElement;
+    if (trigger) trigger.focus();
+  }
+
+  // Event listeners
+  closeBtn?.addEventListener('click', closeModal);
+
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) closeModal();
+  });
+
+  // Keyboard support
+  document.addEventListener('keydown', (e) => {
+    if (!modal.classList.contains('open')) return;
+
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      closeModal();
+    }
+
+    // Basic focus trap
+    if (e.key === 'Tab') {
+      const focusable = modal.querySelectorAll('button, a[href]');
+      const first = focusable[0] as HTMLElement;
+      const last = focusable[focusable.length - 1] as HTMLElement;
+
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  });
+
+  // Expose for the parent section
+  (window as any).__openProjectModal = openModal;
+</script>

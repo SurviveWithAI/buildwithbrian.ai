@@ -1,0 +1,143 @@
+---
+/**
+ * BuildProcess.astro
+ * The 4-step Grok Build methodology — rendered as a responsive cyberpunk timeline.
+ * Vertical on mobile, horizontal on md+. Strong neon connectors and hover states.
+ */
+
+const steps = [
+  {
+    number: "01",
+    title: "RECON",
+    icon: "recon",
+    desc: "Sharp problem framing and deep context loading with Grok. We map the terrain before we move — no guessing, only signal.",
+  },
+  {
+    number: "02",
+    title: "IGNITION",
+    icon: "ignition",
+    desc: "First working prototype in under 90 minutes using tight agent loops. Velocity matters. We ship fast, then we make it real.",
+  },
+  {
+    number: "03",
+    title: "HARDENING",
+    icon: "hardening",
+    desc: "Iterative destruction testing and edge-case elimination with parallel sub-agents. Nothing survives by accident.",
+  },
+  {
+    number: "04",
+    title: "TRANSMISSION",
+    icon: "transmission",
+    desc: "Production polish, documentation, and public release with full provenance. The signal must be clean when it leaves the void.",
+  },
+];
+---
+
+<section id="process" class="relative py-20 border-t border-border-subtle">
+  <div class="max-w-6xl mx-auto px-6">
+    <!-- Header -->
+    <div class="reveal mb-14">
+      <div class="uppercase tracking-[4.5px] text-xs text-cyan mb-4">CHAPTER 03 — THE METHOD</div>
+      <h2 class="text-6xl md:text-7xl font-semibold tracking-[-3.6px]">The Build Process</h2>
+    </div>
+
+    <!-- Timeline -->
+    <div class="relative">
+      <!-- Desktop horizontal connector line -->
+      <div class="hidden md:block absolute top-8 left-[12%] right-[12%] h-px bg-gradient-to-r from-cyan/30 via-teal/40 to-cyan/30"></div>
+
+      <!-- Mobile vertical connector line -->
+      <div class="md:hidden absolute left-7 top-8 bottom-8 w-px bg-gradient-to-b from-cyan/30 via-teal/40 to-cyan/30"></div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8 md:gap-6 relative">
+        {steps.map((step, index) => (
+          <div 
+            class="timeline-step group relative md:text-center"
+            data-step={index}
+          >
+            <!-- Node -->
+            <div class="relative z-10 flex md:justify-center mb-6">
+              <div class="timeline-node flex h-16 w-16 items-center justify-center rounded-full border-2 border-cyan bg-void text-cyan group-hover:border-teal group-hover:text-teal group-hover:shadow-neon-teal transition-all duration-200">
+                {step.icon === "recon" && (
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                )}
+                {step.icon === "ignition" && (
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                )}
+                {step.icon === "hardening" && (
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 8.944 11.922a11.99 11.99 0 004.112 0C18.176 19.29 22 14.591 22 9a12.02 12.02 0 00-1.382-5.016z" />
+                  </svg>
+                )}
+                {step.icon === "transmission" && (
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 01-.316-1.342m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 01-5.368 2.684 3 3 0 005.368-2.684z" />
+                  </svg>
+                )}
+              </div>
+            </div>
+
+            <!-- Content -->
+            <div class="pl-16 md:pl-0">
+              <div class="font-mono text-xs tracking-[3.5px] text-cyan mb-1.5 group-hover:text-teal transition-colors">
+                PHASE {step.number}
+              </div>
+              <h3 class="text-2xl font-semibold tracking-tight mb-3 text-white group-hover:text-teal transition-colors">
+                {step.title}
+              </h3>
+              <p class="text-[15px] text-secondary leading-relaxed">
+                {step.desc}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Bottom note -->
+    <div class="mt-14 text-center text-xs font-mono tracking-[3px] text-muted">
+      REPEAT AS NEEDED. SHIP WHAT SURVIVES.
+    </div>
+  </div>
+</section>
+
+<script>
+  // Light interactivity: clicking a step gives it a temporary "active" neon highlight
+  function initTimelineInteractivity() {
+    const steps = document.querySelectorAll('.timeline-step');
+
+    steps.forEach((step) => {
+      step.addEventListener('click', () => {
+        // Remove active from all
+        steps.forEach(s => s.classList.remove('is-active'));
+
+        // Add to this one
+        step.classList.add('is-active');
+
+        // Remove after a moment
+        setTimeout(() => {
+          step.classList.remove('is-active');
+        }, 1400);
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initTimelineInteractivity);
+  } else {
+    initTimelineInteractivity();
+  }
+</script>
+
+<style>
+  .timeline-step.is-active .timeline-node {
+    border-color: #00d4aa;
+    box-shadow: var(--glow-teal);
+    transform: scale(1.08);
+  }
+</style>

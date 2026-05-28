@@ -1,0 +1,177 @@
+---
+/**
+ * 404.astro — Cyberpunk "Signal Lost" page
+ * Reuses the neural canvas pattern at a smaller scale.
+ * Fully self-contained and beautiful.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="404 — Signal Lost | Brian Phillips"
+  description="The transmission you’re looking for has been lost in the void. Return to the mainframe."
+>
+  <div class="min-h-screen flex flex-col items-center justify-center bg-void text-center px-6 relative overflow-hidden">
+    <!-- Background effects -->
+    <div class="absolute inset-0 scanlines pointer-events-none z-10"></div>
+    <div class="absolute inset-0 matrix-overlay pointer-events-none z-10 opacity-40"></div>
+
+    <!-- Mini neural canvas -->
+    <canvas id="neural-404" class="absolute inset-0 z-0" aria-hidden="true"></canvas>
+
+    <div class="relative z-20 max-w-2xl">
+      <div class="inline-block mb-6 px-4 py-1 border border-red-500/40 text-red-400 text-xs tracking-[4px] font-mono">
+        ERROR 0x04 — TRANSMISSION NOT FOUND
+      </div>
+
+      <h1 
+        class="glitch text-[120px] md:text-[180px] leading-none font-bold tracking-[-8px] text-white mb-2"
+        data-text="404"
+      >
+        404
+      </h1>
+
+      <p class="text-3xl md:text-5xl tracking-[-1.8px] font-semibold mb-4">SIGNAL LOST</p>
+      <p class="max-w-md mx-auto text-secondary text-xl mb-12">
+        The coordinates you requested do not exist in this timeline.<br>
+        The void has claimed them.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/" class="neon-btn px-10 py-4 text-base">RETURN TO THE MAINFRAME</a>
+        <a href="https://x.com/survivewithai" target="_blank" class="neon-btn-teal px-10 py-4 text-base">TRANSMIT A MESSAGE</a>
+      </div>
+
+      <div class="mt-16 text-[10px] font-mono tracking-[4px] text-muted/50">
+        BUILDWITHBRIAN.AI • GROK BUILD PROTOCOL ACTIVE
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  // Mini neural canvas for 404 — lighter, more atmospheric version
+  function init404Canvas() {
+    const canvas = document.getElementById('neural-404') as HTMLCanvasElement | null;
+    if (!canvas) return;
+
+    const ctx = canvas.getContext('2d', { alpha: true });
+    if (!ctx) return;
+
+    let width = 0, height = 0, dpr = 1;
+    let nodes: Array<{x: number; y: number; vx: number; vy: number; r: number}> = [];
+    let animationFrame = 0;
+
+    function resize() {
+      width = canvas.offsetWidth;
+      height = canvas.offsetHeight;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.scale(dpr, dpr);
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+
+      // Fewer nodes for 404 atmosphere
+      const count = Math.floor(Math.min(width, height) / 18);
+      nodes = Array.from({ length: count }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.28,
+        vy: (Math.random() - 0.5) * 0.28,
+        r: Math.random() * 1.6 + 0.9,
+      }));
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = 'rgba(10,10,10,0.65)';
+      ctx.fillRect(0, 0, width, height);
+
+      const mouseX = (window as any).__404_mouse_x ?? width * 0.5;
+      const mouseY = (window as any).__404_mouse_y ?? height * 0.5;
+
+      // Connections
+      ctx.strokeStyle = '#22c55e';
+      ctx.lineWidth = 0.6;
+
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const dx = nodes[i].x - nodes[j].x;
+          const dy = nodes[i].y - nodes[j].y;
+          const dist = Math.hypot(dx, dy);
+
+          if (dist < 110) {
+            const alpha = (1 - dist / 110) * 0.35;
+            ctx.globalAlpha = alpha;
+            ctx.beginPath();
+            ctx.moveTo(nodes[i].x, nodes[i].y);
+            ctx.lineTo(nodes[j].x, nodes[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+      ctx.globalAlpha = 1;
+
+      // Nodes + mouse influence
+      ctx.fillStyle = '#00f5ff';
+      for (const n of nodes) {
+        const dx = mouseX - n.x;
+        const dy = mouseY - n.y;
+        const dist = Math.hypot(dx, dy);
+
+        if (dist < 180 && dist > 4) {
+          n.vx += (dx / dist) * 0.014;
+          n.vy += (dy / dist) * 0.014;
+        }
+
+        n.x += n.vx;
+        n.y += n.vy;
+        n.vx *= 0.982;
+        n.vy *= 0.982;
+
+        // Wrap around edges
+        if (n.x < 0) n.x = width;
+        if (n.x > width) n.x = 0;
+        if (n.y < 0) n.y = height;
+        if (n.y > height) n.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      animationFrame = requestAnimationFrame(draw);
+    }
+
+    // Mouse tracking
+    function onMouseMove(e: MouseEvent) {
+      const rect = canvas.getBoundingClientRect();
+      (window as any).__404_mouse_x = e.clientX - rect.left;
+      (window as any).__404_mouse_y = e.clientY - rect.top;
+    }
+
+    canvas.addEventListener('mousemove', onMouseMove, { passive: true });
+
+    const onResize = () => {
+      resize();
+    };
+
+    window.addEventListener('resize', onResize, { passive: true });
+    resize();
+    draw();
+
+    // Cleanup on navigation away (SPA-like)
+    document.addEventListener('astro:before-swap', () => {
+      cancelAnimationFrame(animationFrame);
+      window.removeEventListener('resize', onResize);
+    }, { once: true });
+  }
+
+  // Boot 404 canvas
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init404Canvas);
+  } else {
+    init404Canvas();
+  }
+</script>

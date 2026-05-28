@@ -1,0 +1,263 @@
+---
+/**
+ * Nav.astro
+ * Fixed cyberpunk navigation with desktop + mobile hamburger.
+ * Pure vanilla JS for scroll-spy and mobile menu.
+ * No frameworks. High performance, accessible.
+ */
+---
+
+<nav 
+  id="main-nav"
+  class="fixed top-0 left-0 right-0 z-50 bg-void/95 backdrop-blur-md border-b border-border-subtle"
+>
+  <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+    <!-- Logo / Brand -->
+    <a 
+      href="#hero" 
+      class="group flex items-baseline gap-x-3 transition-opacity hover:opacity-90"
+      aria-label="Brian Phillips — AI Survivalist — Scroll to top"
+    >
+      <div class="font-mono text-xl tracking-[-1.5px] font-semibold text-white">
+        BRIAN PHILLIPS
+      </div>
+      <div class="hidden sm:block text-[10px] font-mono uppercase tracking-[3px] text-cyan/70 group-hover:text-cyan transition-colors">
+        AI SURVIVALIST
+      </div>
+    </a>
+
+    <!-- Desktop Navigation -->
+    <div class="hidden md:flex items-center gap-x-8 text-sm font-mono tracking-widest">
+      <a href="#about" class="nav-link text-secondary hover:text-cyan transition-colors">ABOUT</a>
+      <a href="#projects" class="nav-link text-secondary hover:text-cyan transition-colors">BUILDS</a>
+      <a href="#process" class="nav-link text-secondary hover:text-cyan transition-colors">PROCESS</a>
+      <a href="#stack" class="nav-link text-secondary hover:text-cyan transition-colors">STACK</a>
+      <a href="#insights" class="nav-link text-secondary hover:text-cyan transition-colors">INSIGHTS</a>
+    </div>
+
+    <!-- Desktop Actions -->
+    <div class="hidden md:flex items-center gap-x-4">
+      <a 
+        href="https://x.com/survivewithai" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        class="neon-btn !px-5 !py-1.5 !text-xs"
+      >
+        @survivewithai
+      </a>
+      <a 
+        href="#connect" 
+        class="neon-btn-teal !px-5 !py-1.5 !text-xs"
+      >
+        CONNECT
+      </a>
+    </div>
+
+    <!-- Mobile Hamburger -->
+    <button 
+      id="nav-toggle"
+      class="md:hidden flex items-center justify-center w-10 h-10 text-cyan hover:text-white transition-colors"
+      aria-label="Toggle navigation menu"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+    >
+      <svg id="nav-icon" xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path id="nav-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.25" d="M4 6h16M4 12h16M4 18h16" />
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Full-Screen Overlay Menu -->
+<div 
+  id="mobile-menu"
+  class="hidden md:hidden fixed inset-0 z-[60] bg-void/98 backdrop-blur-xl"
+  aria-hidden="true"
+>
+  <div class="flex flex-col h-full pt-20 px-6">
+    <!-- Mobile Brand -->
+    <div class="mb-12">
+      <div class="font-mono text-3xl tracking-[-2px] font-semibold text-white">BRIAN PHILLIPS</div>
+      <div class="text-xs tracking-[4px] text-cyan/60 mt-1">AI SURVIVALIST</div>
+    </div>
+
+    <!-- Mobile Links -->
+    <div class="flex flex-col gap-y-6 text-2xl font-mono tracking-widest">
+      <a href="#about" class="mobile-nav-link text-white hover:text-cyan transition-colors">ABOUT</a>
+      <a href="#projects" class="mobile-nav-link text-white hover:text-cyan transition-colors">FEATURED BUILDS</a>
+      <a href="#process" class="mobile-nav-link text-white hover:text-cyan transition-colors">BUILD PROCESS</a>
+      <a href="#stack" class="mobile-nav-link text-white hover:text-cyan transition-colors">GROK BUILD STACK</a>
+      <a href="#insights" class="mobile-nav-link text-white hover:text-cyan transition-colors">LATEST INSIGHTS</a>
+    </div>
+
+    <div class="mt-auto pb-12 flex flex-col gap-y-4">
+      <a 
+        href="https://x.com/survivewithai" 
+        target="_blank" 
+        rel="noopener noreferrer"
+        class="neon-btn justify-center w-full py-4 text-base"
+      >
+        FOLLOW ON X @survivewithai
+      </a>
+      <a 
+        href="#connect" 
+        class="neon-btn-teal justify-center w-full py-4 text-base"
+      >
+        CONNECT WITH ME
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Vanilla JS — Nav behavior (scroll-spy + mobile menu)
+  // Runs after DOM ready via Astro's automatic script handling
+
+  const nav = document.getElementById('main-nav') as HTMLElement | null;
+  const toggle = document.getElementById('nav-toggle') as HTMLButtonElement | null;
+  const mobileMenu = document.getElementById('mobile-menu') as HTMLDivElement | null;
+  const iconPath = document.getElementById('nav-icon-path') as SVGPathElement | null;
+
+  const desktopLinks = Array.from(document.querySelectorAll('.nav-link')) as HTMLAnchorElement[];
+  const mobileLinks = Array.from(document.querySelectorAll('.mobile-nav-link')) as HTMLAnchorElement[];
+
+  const sections = ['hero', 'about', 'projects', 'process', 'stack', 'insights', 'connect'] as const;
+  let currentActive: string | null = null;
+
+  // Mobile menu toggle
+  function setMobileMenu(open: boolean) {
+    if (!mobileMenu || !toggle) return;
+
+    if (open) {
+      mobileMenu.classList.remove('hidden');
+      mobileMenu.setAttribute('aria-hidden', 'false');
+      toggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+
+      if (iconPath) {
+        iconPath.setAttribute('d', 'M6 18L18 6M6 6l12 12'); // X icon
+      }
+    } else {
+      mobileMenu.classList.add('hidden');
+      mobileMenu.setAttribute('aria-hidden', 'true');
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+
+      if (iconPath) {
+        iconPath.setAttribute('d', 'M4 6h16M4 12h16M4 18h16'); // Hamburger
+      }
+    }
+  }
+
+  if (toggle && mobileMenu) {
+    toggle.addEventListener('click', () => {
+      const isOpen = !mobileMenu.classList.contains('hidden');
+      setMobileMenu(!isOpen);
+    });
+
+    // Close mobile menu when clicking any link inside it
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        setMobileMenu(false);
+      });
+    });
+
+    // Close on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !mobileMenu.classList.contains('hidden')) {
+        setMobileMenu(false);
+      }
+    });
+  }
+
+  // Smooth scroll with offset for fixed nav (better than CSS scroll-behavior alone)
+  function setupSmoothScroll(links: HTMLAnchorElement[]) {
+    links.forEach(link => {
+      link.addEventListener('click', (e) => {
+        const href = link.getAttribute('href');
+        if (!href || !href.startsWith('#')) return;
+
+        const target = document.querySelector(href) as HTMLElement | null;
+        if (!target) return;
+
+        e.preventDefault();
+
+        const navHeight = nav?.offsetHeight ?? 80;
+        const targetPosition = target.getBoundingClientRect().top + window.scrollY - navHeight - 24;
+
+        window.scrollTo({
+          top: targetPosition,
+          behavior: 'smooth'
+        });
+
+        // Update URL without jumping
+        history.replaceState(null, '', href);
+      });
+    });
+  }
+
+  setupSmoothScroll(desktopLinks);
+  setupSmoothScroll(mobileLinks);
+
+  // Scroll spy — highlight active section
+  function updateActiveLink() {
+    const navHeight = nav?.offsetHeight ?? 80;
+    const scrollPosition = window.scrollY + navHeight + 80;
+
+    let activeId: string | null = 'hero';
+
+    for (const id of sections) {
+      const section = document.getElementById(id);
+      if (section && section.offsetTop <= scrollPosition) {
+        activeId = id;
+      }
+    }
+
+    if (activeId === currentActive) return;
+    currentActive = activeId;
+
+    // Desktop
+    desktopLinks.forEach(link => {
+      const href = link.getAttribute('href');
+      const isActive = href === `#${activeId}`;
+      link.classList.toggle('text-cyan', isActive);
+      link.classList.toggle('neon-cyan', isActive);
+      link.classList.toggle('text-secondary', !isActive);
+    });
+
+    // Mobile (in case menu is open)
+    mobileLinks.forEach(link => {
+      const href = link.getAttribute('href');
+      const isActive = href === `#${activeId}`;
+      link.classList.toggle('text-cyan', isActive);
+      link.classList.toggle('neon-cyan', isActive);
+    });
+  }
+
+  // Throttled scroll listener (high performance)
+  let scrollTicking = false;
+  window.addEventListener('scroll', () => {
+    if (!scrollTicking) {
+      requestAnimationFrame(() => {
+        updateActiveLink();
+        scrollTicking = false;
+      });
+      scrollTicking = true;
+    }
+  }, { passive: true });
+
+  // Initial active state + small delay for layout
+  setTimeout(() => {
+    updateActiveLink();
+  }, 180);
+
+  // Close mobile menu if user resizes to desktop
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 768 && mobileMenu && !mobileMenu.classList.contains('hidden')) {
+      setMobileMenu(false);
+    }
+  });
+
+  // Expose minimal API for debugging / future extensions (keeps spirit of lightweight)
+  (window as any).__BRIAN_NAV = { updateActiveLink, setMobileMenu };
+</script>

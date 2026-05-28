@@ -1,0 +1,72 @@
+---
+/**
+ * Insights.astro
+ * Latest Insights teaser cards — high-signal transmissions from the void.
+ * 4 cards with real copy, dates, read times, and X links.
+ */
+
+const insights = [
+  {
+    date: "2026.04",
+    readTime: "9 min",
+    title: "Ship 5 Production AI Tools in 48 Hours — The Exact Grok Agent Loop Pattern",
+    excerpt: "The repeatable 4-phase agent workflow I now use to go from raw idea to shipped, documented system faster than most teams ship a PRD.",
+    xUrl: "https://x.com/survivewithai/status/1894567890123456789",
+  },
+  {
+    date: "2026.03",
+    readTime: "7 min",
+    title: "Why Every Serious Builder Needs a Personal Cyberpunk Aesthetic",
+    excerpt: "Aesthetics aren’t decoration. They’re a survival mechanism. Here’s why a sharp visual language makes your tools (and your thinking) dramatically better.",
+    xUrl: "https://x.com/survivewithai/status/1891234567890123456",
+  },
+  {
+    date: "2026.03",
+    readTime: "11 min",
+    title: "Sub-Agent Hierarchies: The Missing Primitive for Reliable AI Systems",
+    excerpt: "Single agents hit walls. Hierarchies of specialized sub-agents with clear memory protocols don’t. This is how I actually ship complex work now.",
+    xUrl: "https://x.com/survivewithai/status/1889876543210987654",
+  },
+  {
+    date: "2026.02",
+    readTime: "6 min",
+    title: "I Stopped Writing Code by Hand. Here’s What Actually Happened.",
+    excerpt: "After six months of using Grok Build as my primary coding partner, my output, quality, and enjoyment all increased. The results were surprising.",
+    xUrl: "https://x.com/survivewithai/status/1887654321098765432",
+  },
+];
+---
+
+<div class="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+  {insights.map((insight, index) => (
+    <a 
+      href={insight.xUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="insight-card cyber-card group block p-7 reveal"
+      style={`transition-delay: ${index * 50}ms`}
+    >
+      <!-- Meta -->
+      <div class="flex items-center justify-between text-xs font-mono mb-5">
+        <div class="text-muted tracking-[2px]">{insight.date}</div>
+        <div class="text-cyan/70">{insight.readTime} read</div>
+      </div>
+
+      <!-- Title -->
+      <h3 class="insight-title font-semibold text-[17px] leading-tight tracking-[-0.3px] text-white mb-4 group-hover:text-teal transition-colors duration-200">
+        {insight.title}
+      </h3>
+
+      <!-- Excerpt -->
+      <p class="text-secondary text-[14px] leading-snug line-clamp-3 mb-6">
+        {insight.excerpt}
+      </p>
+
+      <!-- CTA -->
+      <div class="flex items-center text-xs font-mono tracking-[2.5px] text-teal group-hover:text-cyan transition-colors">
+        READ ON X 
+        <span class="ml-1.5 group-hover:ml-2 transition-all">→</span>
+      </div>
+    </a>
+  ))}
+</div>

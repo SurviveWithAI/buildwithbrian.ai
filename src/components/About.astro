@@ -1,0 +1,150 @@
+---
+/**
+ * About.astro
+ * The origin story and proof points for Brian Phillips — AI Survivalist.
+ * Sharp, high-signal, cyberpunk tone. Fully polished.
+ */
+---
+
+<section id="about" class="relative pt-20 pb-24 border-t border-border-subtle">
+  <div class="max-w-6xl mx-auto px-6">
+    <!-- Section Header -->
+    <div class="reveal mb-14">
+      <div class="uppercase tracking-[4.5px] text-xs text-cyan mb-4">CHAPTER 01 — ORIGIN</div>
+      <h2 class="text-6xl md:text-7xl font-semibold tracking-[-3.6px] leading-none">The Survivalist.</h2>
+    </div>
+
+    <div class="grid md:grid-cols-12 gap-x-8 gap-y-14">
+      <!-- Bio -->
+      <div class="md:col-span-7 reveal">
+        <div class="max-w-[42ch] text-[17px] leading-relaxed text-secondary space-y-6">
+          <p>
+            I don’t just use AI.<br>
+            <span class="text-white">I survive with it.</span>
+          </p>
+          <p>
+            In a world drowning in hype and half-baked demos, I build production systems that actually matter — fast. 
+            Every tool, interface, and agent on this site was prototyped and shipped using only 
+            <span class="text-cyan font-medium">Grok Build</span>, xAI’s command-line coding agent.
+          </p>
+          <p>
+            My philosophy is simple: <span class="text-white">ship sharp, ship often, survive the future.</span><br>
+            No committees. No 6-month roadmaps. Just relentless, high-signal iteration in the void.
+          </p>
+        </div>
+      </div>
+
+      <!-- Metrics Grid -->
+      <div class="md:col-span-5">
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Metric 1 -->
+          <div class="cyber-card p-6 reveal delay-1 group">
+            <div class="font-mono text-[3.25rem] md:text-6xl tracking-[-2.5px] text-cyan mb-1 transition-transform group-hover:scale-[1.02]" data-count="50">50</div>
+            <div class="uppercase text-[10px] tracking-[2.5px] text-secondary font-medium">PROTOTYPES SHIPPED</div>
+            <div class="mt-1 text-[10px] text-muted">All with Grok Build</div>
+          </div>
+
+          <!-- Metric 2 -->
+          <div class="cyber-card p-6 reveal delay-2 group">
+            <div class="font-mono text-[3.25rem] md:text-6xl tracking-[-2.5px] text-teal mb-1 transition-transform group-hover:scale-[1.02]" data-count="14">14</div>
+            <div class="uppercase text-[10px] tracking-[2.5px] text-secondary font-medium">PRODUCTION SYSTEMS LIVE</div>
+            <div class="mt-1 text-[10px] text-muted">Running in the wild</div>
+          </div>
+
+          <!-- Metric 3 -->
+          <div class="cyber-card p-6 reveal delay-3 group">
+            <div class="font-mono text-[3.25rem] md:text-6xl tracking-[-2.5px] text-matrix mb-1 transition-transform group-hover:scale-[1.02]" data-count="100">100</div>
+            <div class="uppercase text-[10px] tracking-[2.5px] text-secondary font-medium">% BUILT WITH GROK BUILD</div>
+            <div class="mt-1 text-[10px] text-muted">Zero exceptions</div>
+          </div>
+
+          <!-- Metric 4 -->
+          <div class="cyber-card p-6 reveal delay-4 group">
+            <div class="font-mono text-[3.25rem] md:text-6xl tracking-[-2.5px] text-white mb-1 transition-transform group-hover:scale-[1.02]">
+              2.3<span class="text-[1.35rem] align-super opacity-70">d</span>
+            </div>
+            <div class="uppercase text-[10px] tracking-[2.5px] text-secondary font-medium">AVG. IDEA → DEMO</div>
+            <div class="mt-1 text-[10px] text-muted">From prompt to working prototype</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Philosophy Quote -->
+    <div class="mt-16 pt-9 border-t border-border-subtle max-w-[46rem] reveal">
+      <blockquote class="text-[1.72rem] md:text-[2.05rem] leading-[1.05] tracking-[-1.35px] text-white/90 font-light">
+        “The builders who thrive in the age of AI won’t be the ones with the best prompts.<br>
+        They’ll be the ones who move the fastest from prompt to production.”
+      </blockquote>
+      <div class="mt-5 flex items-center gap-x-3 text-xs uppercase tracking-[3.5px] text-matrix/70 font-medium">
+        — BRIAN PHILLIPS
+        <div class="flex-1 h-px bg-matrix/30"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // Lightweight animated counters — scoped to this component
+  function initAboutCounters() {
+    const counters = document.querySelectorAll('#about [data-count]');
+    if (!counters.length) return;
+
+    const animate = (el: HTMLElement) => {
+      const target = parseInt(el.dataset.count || '0', 10);
+      const duration = target > 90 ? 1350 : 1150;
+      const startTime = performance.now();
+
+      const step = (now: number) => {
+        const progress = Math.min((now - startTime) / duration, 1);
+        // Ease out cubic
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.floor(eased * target);
+
+        if (el.dataset.count === '100') {
+          el.textContent = current + '%';
+        } else if (el.dataset.count === '2.3') {
+          // Special case already handled in markup
+        } else {
+          el.textContent = current.toString();
+        }
+
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          if (el.dataset.count === '100') {
+            el.textContent = '100%';
+          } else if (el.dataset.count === '50') {
+            el.textContent = '50+';
+          } else {
+            el.textContent = target.toString();
+          }
+        }
+      };
+
+      requestAnimationFrame(step);
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const el = entry.target as HTMLElement;
+          animate(el);
+          observer.unobserve(el);
+        }
+      });
+    }, {
+      threshold: 0.55,
+      rootMargin: '0px 0px -40px 0px'
+    });
+
+    counters.forEach((el) => observer.observe(el));
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAboutCounters, { once: true });
+  } else {
+    initAboutCounters();
+  }
+</script>

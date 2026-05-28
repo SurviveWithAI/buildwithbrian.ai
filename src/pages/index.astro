@@ -1,17 +1,86 @@
 ---
-
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import About from '../components/About.astro';
+import ProjectsSection from '../components/ProjectsSection.astro';
+import BuildProcess from '../components/BuildProcess.astro';
+import StackGrid from '../components/StackGrid.astro';
+import Insights from '../components/Insights.astro';
+import Footer from '../components/Footer.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<BaseLayout>
+  <!-- Fixed Navigation -->
+  <Nav slot="nav" />
+
+  <!-- 1. HERO (full viewport) -->
+  <Hero />
+
+  <!-- 2. ABOUT -->
+  <About />
+
+  <!-- 3. FEATURED GROK BUILDS -->
+  <ProjectsSection />
+
+  <!-- 4. BUILD PROCESS -->
+  <BuildProcess />
+
+  <!-- 5. GROK BUILD STACK -->
+  <section id="stack" class="relative py-20 bg-elevated border-t border-border-subtle">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="reveal mb-12">
+        <div class="uppercase tracking-[4px] text-xs text-cyan mb-3">CHAPTER 04 — THE TOOLS</div>
+        <h2 class="text-6xl md:text-7xl font-semibold tracking-[-3.2px]">My Grok Build Stack</h2>
+      </div>
+
+      <StackGrid />
+    </div>
+  </section>
+
+  <!-- 6. LATEST INSIGHTS -->
+  <section id="insights" class="relative py-20 border-t border-border-subtle">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-y-4 reveal">
+        <div>
+          <div class="uppercase tracking-[4px] text-xs text-cyan mb-3">CHAPTER 05 — TRANSMISSIONS</div>
+          <h2 class="text-6xl md:text-7xl font-semibold tracking-[-3.2px]">Latest Insights</h2>
+        </div>
+        <a href="https://x.com/survivewithai" target="_blank" class="neon-btn !text-xs self-start md:self-auto">VIEW ALL ON X →</a>
+      </div>
+
+      <Insights />
+    </div>
+  </section>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  // Global scroll reveal system (used by all sections)
+  // Lightweight, performant, and respects the design system
+  function initGlobalReveals() {
+    const reveals = document.querySelectorAll('.reveal');
+    if (!reveals.length) return;
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.12,
+      rootMargin: '0px 0px -65px 0px'
+    });
+
+    reveals.forEach((el) => io.observe(el));
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initGlobalReveals, { once: true });
+  } else {
+    initGlobalReveals();
+  }
+</script>

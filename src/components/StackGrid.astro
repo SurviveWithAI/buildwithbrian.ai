@@ -1,0 +1,123 @@
+---
+/**
+ * StackGrid.astro
+ * "My Grok Build Stack" — 9 core tools & patterns that power every build.
+ * Custom inline SVGs with strong neon hover behavior.
+ */
+
+const stackItems = [
+  {
+    name: "Grok Build Core",
+    desc: "TUI + Agent Mode + Subagents. The foundation of every prototype.",
+    icon: "grok",
+  },
+  {
+    name: "Astro 6 + Tailwind 4",
+    desc: "Blazing static output with perfect developer experience.",
+    icon: "astro",
+  },
+  {
+    name: "TypeScript Strict",
+    desc: "Zero tolerance for ambiguity. Every type tells the truth.",
+    icon: "ts",
+  },
+  {
+    name: "Canvas & WebGL",
+    desc: "Neural networks, procedural worlds, and custom visual systems.",
+    icon: "canvas",
+  },
+  {
+    name: "Node CLI Architecture",
+    desc: "Commander, Effect, and robust command-line tooling.",
+    icon: "cli",
+  },
+  {
+    name: "Zod + Validation",
+    desc: "Runtime safety and schema-driven development at every layer.",
+    icon: "zod",
+  },
+  {
+    name: "Hierarchical Memory",
+    desc: "SurvivalKernel-style long-term context that actually survives.",
+    icon: "memory",
+  },
+  {
+    name: "Parallel Sub-Agents",
+    desc: "AgentMesh orchestration for complex, reliable reasoning.",
+    icon: "mesh",
+  },
+  {
+    name: "Cyberpunk Systems",
+    desc: "Neon glows, glitch effects, scanlines, and high-signal aesthetics.",
+    icon: "cyber",
+  },
+];
+---
+
+<div id="stack-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+  {stackItems.map((item, index) => (
+    <div 
+      class="stack-item cyber-card p-6 group flex flex-col reveal"
+      style={`transition-delay: ${index * 45}ms`}
+    >
+      <div class="stack-icon mb-5 text-cyan group-hover:text-teal transition-colors duration-200">
+        {item.icon === "grok" && (
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        )}
+        {item.icon === "astro" && (
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M14 5l7 7-7 7M5 12h14" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.3" d="M19 19l-7-7 7-7" />
+          </svg>
+        )}
+        {item.icon === "ts" && (
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+          </svg>
+        )}
+        {item.icon === "canvas" && (
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+          </svg>
+        )}
+        {item.icon === "cli" && (
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        )}
+        {item.icon === "zod" && (
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" d="M9 12l2 2 4-4m6 2a9 9 0 01-9 9 9 9 0 01-9-9 9 9 0 019-9 9 9 0 019 9z" />
+          </svg>
+        )}
+        {item.icon === "memory" && (
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2" />
+          </svg>
+        )}
+        {item.icon === "mesh" && (
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 01-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 01-2 2 2 2 0 01-2-2 2 2 0 012-2 2 2 0 012 2zm-6 0a2 2 0 01-2 2 2 2 0 01-2-2 2 2 0 012-2 2 2 0 012 2z" />
+          </svg>
+        )}
+        {item.icon === "cyber" && (
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.2" d="M12 8v4l2 2" />
+          </svg>
+        )}
+      </div>
+
+      <div>
+        <h3 class="font-semibold text-lg tracking-tight text-white mb-1.5 group-hover:text-teal transition-colors">
+          {item.name}
+        </h3>
+        <p class="text-sm text-secondary leading-snug">
+          {item.desc}
+        </p>
+      </div>
+    </div>
+  ))}
+</div>

@@ -1,0 +1,156 @@
+---
+/**
+ * BaseLayout.astro
+ * The single source of truth for <head>, SEO, schema, and global structure.
+ * Every page (currently only index + 404) wraps content in this layout.
+ */
+
+export interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonical?: string;
+}
+
+const {
+  title = "Brian Phillips | AI Survivalist — buildwithbrian.ai",
+  description = "Rapid AI prototyping and practical tools built exclusively with Grok Build. AI Survivalist — Adapt. Survive. Thrive. In the age of AI.",
+  image = "/og-image.jpg",
+  canonical = "https://buildwithbrian.ai",
+} = Astro.props;
+
+const siteUrl = "https://buildwithbrian.ai";
+const fullImage = image.startsWith("http") ? image : `${siteUrl}${image}`;
+const currentYear = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Primary Meta -->
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Brian Phillips" />
+    <meta name="keywords" content="Grok Build, AI prototyping, xAI, AI Survivalist, rapid prototyping, cyberpunk, Brian Phillips, AI tools, agent systems, CLI tools" />
+    <meta name="theme-color" content="#0a0a0a" />
+
+    <!-- Canonical -->
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={fullImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:site_name" content="buildwithbrian.ai" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content={canonical} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={fullImage} />
+    <meta name="twitter:creator" content="@survivewithai" />
+    <meta name="twitter:site" content="@survivewithai" />
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+
+    <!-- Preconnect for performance (future external assets) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+
+    <!-- JSON-LD Schema: Person + WebSite + Organization signal -->
+    <script type="application/ld+json" is:inline>
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Person",
+            "@id": "https://buildwithbrian.ai/#person",
+            "name": "Brian Phillips",
+            "alternateName": "AI Survivalist",
+            "url": "https://buildwithbrian.ai",
+            "image": "https://buildwithbrian.ai/og-image.png",
+            "sameAs": [
+              "https://x.com/survivewithai"
+            ],
+            "jobTitle": "AI Survivalist & Rapid Prototyping Engineer",
+            "description": "I build practical, production-grade AI systems and tools at extreme velocity using exclusively Grok Build (xAI).",
+            "knowsAbout": [
+              "Rapid AI Prototyping",
+              "Agentic Systems",
+              "Grok Build",
+              "CLI Tooling",
+              "Cyberpunk Interfaces",
+              "Knowledge Graphs",
+              "Autonomous Workflows"
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://buildwithbrian.ai/#website",
+            "url": "https://buildwithbrian.ai",
+            "name": "buildwithbrian.ai",
+            "description": "Portfolio of Brian Phillips — AI Survivalist. All work built exclusively with Grok Build.",
+            "publisher": {
+              "@id": "https://buildwithbrian.ai/#person"
+            },
+            "inLanguage": "en-US"
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://buildwithbrian.ai/#org",
+            "name": "buildwithbrian.ai",
+            "url": "https://buildwithbrian.ai",
+            "logo": "https://buildwithbrian.ai/favicon.svg",
+            "founder": {
+              "@id": "https://buildwithbrian.ai/#person"
+            },
+            "description": "Independent studio shipping high-signal AI prototypes and tools created 100% with Grok Build by xAI."
+          }
+        ]
+      }
+    </script>
+  </head>
+
+  <body class="bg-void text-primary antialiased selection:bg-cyan selection:text-void">
+    <!-- Global Navigation (fixed) -->
+    <slot name="nav" />
+
+    <!-- Main Content -->
+    <main>
+      <slot />
+    </main>
+
+    <!-- Global Footer -->
+    <slot name="footer" />
+
+    <!-- 
+      Lightweight global script loader.
+      All heavy interactive logic lives in individual components or small public/ scripts.
+      This keeps the bundle tiny and true to the "vanilla + high performance" mandate.
+    -->
+    <script is:inline>
+      // Respect reduced motion globally for any future JS that reads it
+      window.__REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      // Easter egg: Konami-free console message for fellow builders
+      if (typeof console !== 'undefined') {
+        console.log(
+          '%c[buildwithbrian.ai] This entire site was built exclusively with Grok Build (xAI). No templates. No fluff.',
+          'color:#22c55e; font-family:monospace; font-size:9px'
+        );
+      }
+    </script>
+  </body>
+</html>
