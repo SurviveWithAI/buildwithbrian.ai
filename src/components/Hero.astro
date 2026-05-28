@@ -139,26 +139,62 @@
       packets = [];
     }
 
-    // More robust resizing for hero canvas
+    // Very robust hero canvas sizing
     const heroSection = document.getElementById('hero');
 
-    const resizeObserver = new ResizeObserver(() => {
-      resize();
-    });
+    function safeResize() {
+      // Prefer measuring the hero section if available
+      const target = heroSection || canvas;
+      const rect = target.getBoundingClientRect();
 
-    if (heroSection) {
-      resizeObserver.observe(heroSection);
-    } else {
-      resizeObserver.observe(canvas);
+      width = rect.width || window.innerWidth;
+      height = rect.height || (window.innerHeight - 80); // fallback accounting for nav
+
+      dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      // Recreate nodes for new size
+      const area = width * height;
+      const baseCount = Math.floor(Math.min(92, Math.max(38, area / 9200)));
+      const targetCount = window.innerWidth < 768 ? Math.floor(baseCount * 0.42) : baseCount;
+
+      nodes = Array.from({ length: targetCount }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        vx: (Math.random() - 0.5) * 0.32,
+        vy: (Math.random() - 0.5) * 0.32,
+        r: Math.random() * 1.85 + 1.15,
+      }));
+
+      packets = [];
     }
 
-    // Force multiple resizes to handle late layout (fonts, flex, etc.)
-    requestAnimationFrame(() => resize());
-    requestAnimationFrame(() => resize());
-    setTimeout(resize, 100);
-    setTimeout(resize, 300);
+    const resizeObserver = new ResizeObserver(() => safeResize());
+    if (heroSection) resizeObserver.observe(heroSection);
 
-    window.addEventListener('load', resize, { once: true });
+    // Aggressive initial sizing to beat layout timing issues (especially Safari)
+    function forceInitialResize() {
+      safeResize();
+      requestAnimationFrame(safeResize);
+      requestAnimationFrame(safeResize);
+    }
+
+    setTimeout(forceInitialResize, 0);
+    setTimeout(forceInitialResize, 50);
+    setTimeout(forceInitialResize, 150);
+    setTimeout(forceInitialResize, 400);
+
+    window.addEventListener('load', safeResize, { once: true });
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = window.setTimeout(safeResize, 60);
+    }, { passive: true });
 
     // Mouse state
     let mouseX = width * 0.5;
@@ -382,18 +418,8 @@
     }
     document.addEventListener('visibilitychange', handleVisibility, { passive: true });
 
-    // Resize handler (debounced)
-    let resizeTimeout: number;
-    const onResize = () => {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = window.setTimeout(() => {
-        resize();
-      }, 80);
-    };
-    window.addEventListener('resize', onResize, { passive: true });
-
-    // Initial boot
-    resize();
+    // Initial boot - use the robust safeResize
+    safeResize();
 
     // Start the loop
     lastPacketTime = performance.now() - 420;
