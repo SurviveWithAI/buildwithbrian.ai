@@ -3,6 +3,13 @@
  * BaseLayout.astro
  * The single source of truth for <head>, SEO, schema, and global structure.
  * Every page (currently only index + 404) wraps content in this layout.
+ *
+ * Phase 4 SEO & Canonical Hardening complete:
+ * - 100% env-driven: canonicals, OG, Twitter, JSON-LD all derive from astro.config `site` + `base`.
+ * - Dynamic JSON-LD via frontmatter JS object + JSON.stringify (no hardcodes).
+ * - Image handling robust (default "/og-image.jpg", fullImage + schemaPersonImage consistent).
+ * - Domain switch (GH Pages ↔ custom) requires *only* astro.config change per AGENTS.md §7.
+ * See extensive comments in frontmatter for the exact switch checklist and variable flow.
  */
 
 export interface Props {
@@ -18,12 +25,111 @@ const {
   title = "Brian Phillips | AI Survivalist — buildwithbrian.ai",
   description = "Rapid AI prototyping and practical tools built exclusively with Grok Build. AI Survivalist — Adapt. Survive. Thrive. In the age of AI.",
   image = "/og-image.jpg",
-  canonical = "https://survivewithai.github.io/buildwithbrian.ai",
+  canonical: userCanonical,
 } = Astro.props;
+
+// ============================================
+// ENV-DRIVEN URL / CANONICAL / SCHEMA LOGIC (Phase 4 SEO Hardening)
+// ============================================
+// Single source of truth for deployment target (GitHub Pages vs custom domain).
+// Controlled exclusively by astro.config.mjs `site` + `base` (see AGENTS.md §7).
+//
+// GitHub Pages (current default):
+//   site: 'https://survivewithai.github.io'
+//   base: '/buildwithbrian.ai'
+//   → All canonicals/OG/schema URLs resolve to https://survivewithai.github.io/buildwithbrian.ai/...
+//
+// Custom domain (future):
+//   site: 'https://buildwithbrian.ai'
+//   base: '/'
+//   → All URLs resolve to https://buildwithbrian.ai/...
+//
+// Domain switch process (from AGENTS.md + plan.md):
+//   1. Update ONLY astro.config.mjs (uncomment desired block).
+//   2. (Custom domain) Rename public/CNAME.custom-domain → public/CNAME.
+//   3. Push → GitHub Actions builds with correct env.
+//   4. Zero changes required in BaseLayout or elsewhere.
+// 
+// import.meta.env.SITE and BASE_URL are injected by Astro at build time.
+// All OG, Twitter, canonical, and JSON-LD are now 100% dynamic. No hardcodes.
 
 const siteUrl = import.meta.env.SITE || 'https://survivewithai.github.io';
 const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
-const fullImage = image.startsWith("http") ? image : `${siteUrl}${base}${image}`;
+
+// Robust fullImage computation (image handling hardened):
+// - Default prop is "/og-image.jpg" (correct file in public/)
+// - Supports absolute override (http/https prefix)
+// - Always produces absolute URL for OG/Twitter/JSON-LD (critical for crawlers)
+const fullImage = image.startsWith("http") 
+  ? image 
+  : `${siteUrl}${base}${image}`;
+
+// Centralized canonical (used consistently for <link rel="canonical">, og:url, twitter:url)
+const canonical = userCanonical || `${siteUrl}${base}/`;
+
+// Schema entity roots (absolute, trailing slash for root consistency)
+const rootUrl = `${siteUrl}${base}/`;
+const personId = `${rootUrl}#person`;
+const websiteId = `${rootUrl}#website`;
+const orgId = `${rootUrl}#org`;
+
+// High-quality image for Person schema — reuses the same og-image.jpg via fullImage logic.
+// This fixes the prior mismatch (schema referenced non-existent .png).
+const schemaPersonImage = fullImage;
+
+// JSON-LD @graph built as a proper JS object in frontmatter (fully dynamic).
+// Every @id, url, image, logo now derives from siteUrl + base.
+// Brand voice, knowsAbout array, jobTitle, descriptions, sameAs preserved EXACTLY.
+const jsonLdSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": personId,
+      "name": "Brian Phillips",
+      "alternateName": "AI Survivalist",
+      "url": rootUrl,
+      "image": schemaPersonImage,
+      "sameAs": [
+        "https://x.com/survivewithai"
+      ],
+      "jobTitle": "AI Survivalist & Rapid Prototyping Engineer",
+      "description": "I build practical, production-grade AI systems and tools at extreme velocity using exclusively Grok Build (xAI).",
+      "knowsAbout": [
+        "Rapid AI Prototyping",
+        "Agentic Systems",
+        "Grok Build",
+        "CLI Tooling",
+        "Cyberpunk Interfaces",
+        "Knowledge Graphs",
+        "Autonomous Workflows"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": websiteId,
+      "url": rootUrl,
+      "name": "buildwithbrian.ai",
+      "description": "Portfolio of Brian Phillips — AI Survivalist. All work built exclusively with Grok Build.",
+      "publisher": {
+        "@id": personId
+      },
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "Organization",
+      "@id": orgId,
+      "name": "buildwithbrian.ai",
+      "url": rootUrl,
+      "logo": `${siteUrl}${base}/favicon.svg`,
+      "founder": {
+        "@id": personId
+      },
+      "description": "Independent studio shipping high-signal AI prototypes and tools created 100% with Grok Build by xAI."
+    }
+  ]
+};
+
 const currentYear = new Date().getFullYear();
 ---
 
@@ -41,7 +147,7 @@ const currentYear = new Date().getFullYear();
     <meta name="keywords" content="Grok Build, AI prototyping, xAI, AI Survivalist, rapid prototyping, cyberpunk, Brian Phillips, AI tools, agent systems, CLI tools" />
     <meta name="theme-color" content="#0a0a0a" />
 
-    <!-- Canonical -->
+    <!-- Canonical (centralized, env-driven via canonical var above) -->
     <link rel="canonical" href={canonical} />
 
     <!-- Open Graph / Facebook -->
@@ -52,6 +158,8 @@ const currentYear = new Date().getFullYear();
     <meta property="og:image" content={fullImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <!-- og:site_name kept as the human brand "buildwithbrian.ai" (not a URL).
+         This is intentional per SEO best practices for site_name; all URLs/canonicals remain fully dynamic. -->
     <meta property="og:site_name" content="buildwithbrian.ai" />
     <meta property="og:locale" content="en_US" />
 
@@ -69,60 +177,11 @@ const currentYear = new Date().getFullYear();
     <link rel="icon" type="image/x-icon" href={`${base}/favicon.ico`} />
     <link rel="apple-touch-icon" href={`${base}/favicon.svg`} />
 
-    <!-- Preconnect for performance (future external assets) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
-
-    <!-- JSON-LD Schema: Person + WebSite + Organization signal -->
+    <!-- JSON-LD Schema: Person + WebSite + Organization (FULLY DYNAMIC) -->
+    <!-- Built from jsonLdSchema object in frontmatter. All @id/url/image/logo respect current site+base.
+         Output via JSON.stringify for clean, valid, indented JSON-LD. is:inline prevents Astro processing. -->
     <script type="application/ld+json" is:inline>
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "Person",
-            "@id": "https://buildwithbrian.ai/#person",
-            "name": "Brian Phillips",
-            "alternateName": "AI Survivalist",
-            "url": "https://buildwithbrian.ai",
-            "image": "https://buildwithbrian.ai/og-image.png",
-            "sameAs": [
-              "https://x.com/survivewithai"
-            ],
-            "jobTitle": "AI Survivalist & Rapid Prototyping Engineer",
-            "description": "I build practical, production-grade AI systems and tools at extreme velocity using exclusively Grok Build (xAI).",
-            "knowsAbout": [
-              "Rapid AI Prototyping",
-              "Agentic Systems",
-              "Grok Build",
-              "CLI Tooling",
-              "Cyberpunk Interfaces",
-              "Knowledge Graphs",
-              "Autonomous Workflows"
-            ]
-          },
-          {
-            "@type": "WebSite",
-            "@id": "https://buildwithbrian.ai/#website",
-            "url": "https://buildwithbrian.ai",
-            "name": "buildwithbrian.ai",
-            "description": "Portfolio of Brian Phillips — AI Survivalist. All work built exclusively with Grok Build.",
-            "publisher": {
-              "@id": "https://buildwithbrian.ai/#person"
-            },
-            "inLanguage": "en-US"
-          },
-          {
-            "@type": "Organization",
-            "@id": "https://buildwithbrian.ai/#org",
-            "name": "buildwithbrian.ai",
-            "url": "https://buildwithbrian.ai",
-            "logo": "https://buildwithbrian.ai/favicon.svg",
-            "founder": {
-              "@id": "https://buildwithbrian.ai/#person"
-            },
-            "description": "Independent studio shipping high-signal AI prototypes and tools created 100% with Grok Build by xAI."
-          }
-        ]
-      }
+      {JSON.stringify(jsonLdSchema, null, 2)}
     </script>
   </head>
 

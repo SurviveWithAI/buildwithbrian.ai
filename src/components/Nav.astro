@@ -21,18 +21,17 @@
       <div class="font-mono text-xl tracking-[-1.5px] font-semibold text-white">
         BRIAN PHILLIPS
       </div>
-      <div class="hidden sm:block text-[10px] font-mono uppercase tracking-[3px] text-cyan/70 group-hover:text-cyan transition-colors">
+      <div class="hidden sm:block text-[10px] font-mono uppercase tracking-[3px] text-cyan/70 group-hover:text-cyan/80 transition-colors">
         AI SURVIVALIST
       </div>
     </a>
 
     <!-- Desktop Navigation -->
     <div class="hidden md:flex items-center gap-x-8 text-sm font-mono tracking-widest">
-      <a href="#about" class="nav-link text-secondary hover:text-cyan transition-colors">ABOUT</a>
-      <a href="#projects" class="nav-link text-secondary hover:text-cyan transition-colors">BUILDS</a>
-      <a href="#process" class="nav-link text-secondary hover:text-cyan transition-colors">PROCESS</a>
-      <a href="#stack" class="nav-link text-secondary hover:text-cyan transition-colors">STACK</a>
-      <a href="#insights" class="nav-link text-secondary hover:text-cyan transition-colors">INSIGHTS</a>
+      <a href="#about" class="nav-link text-secondary hover:text-cyan/80 transition-colors">ABOUT</a>
+      <a href="#projects" class="nav-link text-secondary hover:text-cyan/80 transition-colors">BUILDS</a>
+      <a href="#process" class="nav-link text-secondary hover:text-cyan/80 transition-colors">PROCESS</a>
+      <a href="#insights" class="nav-link text-secondary hover:text-cyan/80 transition-colors">INSIGHTS</a>
     </div>
 
     <!-- Desktop Actions -->
@@ -56,7 +55,7 @@
     <!-- Mobile Hamburger -->
     <button 
       id="nav-toggle"
-      class="md:hidden flex items-center justify-center w-10 h-10 text-cyan hover:text-white transition-colors"
+      class="md:hidden flex items-center justify-center w-11 h-11 text-cyan hover:text-white transition-colors"
       aria-label="Toggle navigation menu"
       aria-expanded="false"
       aria-controls="mobile-menu"
@@ -83,11 +82,10 @@
 
     <!-- Mobile Links -->
     <div class="flex flex-col gap-y-6 text-2xl font-mono tracking-widest">
-      <a href="#about" class="mobile-nav-link text-white hover:text-cyan transition-colors">ABOUT</a>
-      <a href="#projects" class="mobile-nav-link text-white hover:text-cyan transition-colors">FEATURED BUILDS</a>
-      <a href="#process" class="mobile-nav-link text-white hover:text-cyan transition-colors">BUILD PROCESS</a>
-      <a href="#stack" class="mobile-nav-link text-white hover:text-cyan transition-colors">GROK BUILD STACK</a>
-      <a href="#insights" class="mobile-nav-link text-white hover:text-cyan transition-colors">LATEST INSIGHTS</a>
+      <a href="#about" class="mobile-nav-link text-white hover:text-cyan/80 transition-colors">ABOUT</a>
+      <a href="#projects" class="mobile-nav-link text-white hover:text-cyan/80 transition-colors">FEATURED BUILDS</a>
+      <a href="#process" class="mobile-nav-link text-white hover:text-cyan/80 transition-colors">BUILD PROCESS</a>
+      <a href="#insights" class="mobile-nav-link text-white hover:text-cyan/80 transition-colors">LATEST INSIGHTS</a>
     </div>
 
     <div class="mt-auto pb-12 flex flex-col gap-y-4">
@@ -121,7 +119,7 @@
   const desktopLinks = Array.from(document.querySelectorAll('.nav-link')) as HTMLAnchorElement[];
   const mobileLinks = Array.from(document.querySelectorAll('.mobile-nav-link')) as HTMLAnchorElement[];
 
-  const sections = ['hero', 'about', 'projects', 'process', 'stack', 'insights', 'connect'] as const;
+  const sections = ['hero', 'about', 'projects', 'process', 'insights', 'connect'] as const;
   let currentActive: string | null = null;
 
   // Mobile menu toggle
@@ -170,8 +168,11 @@
     });
   }
 
-  // Smooth scroll with offset for fixed nav (better than CSS scroll-behavior alone)
+  // Smooth scroll with offset for fixed nav (better than CSS scroll-behavior alone).
+  // Respects reduced motion (High a11y leak fix): uses 'auto' when user prefers reduced.
   function setupSmoothScroll(links: HTMLAnchorElement[]) {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches || !!(window as any).__REDUCED_MOTION;
+
     links.forEach(link => {
       link.addEventListener('click', (e) => {
         const href = link.getAttribute('href');
@@ -187,7 +188,7 @@
 
         window.scrollTo({
           top: targetPosition,
-          behavior: 'smooth'
+          behavior: prefersReducedMotion ? 'auto' : 'smooth'
         });
 
         // Update URL without jumping
@@ -223,6 +224,11 @@
       link.classList.toggle('text-cyan', isActive);
       link.classList.toggle('neon-cyan', isActive);
       link.classList.toggle('text-secondary', !isActive);
+      if (isActive) {
+        link.setAttribute('aria-current', 'page');
+      } else {
+        link.removeAttribute('aria-current');
+      }
     });
 
     // Mobile (in case menu is open)
@@ -231,6 +237,11 @@
       const isActive = href === `#${activeId}`;
       link.classList.toggle('text-cyan', isActive);
       link.classList.toggle('neon-cyan', isActive);
+      if (isActive) {
+        link.setAttribute('aria-current', 'page');
+      } else {
+        link.removeAttribute('aria-current');
+      }
     });
   }
 

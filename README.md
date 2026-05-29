@@ -11,6 +11,23 @@ Production-ready, single-page Astro + Tailwind cyberpunk portfolio for Brian Phi
 
 ---
 
+## Development Rules (Read First)
+
+**All contributors and AI agents must follow [AGENTS.md](AGENTS.md) at all times.**
+
+- Clean Astro + Tailwind 4 conventions
+- Strict accessibility (WCAG 2.2 AA), SEO, and performance gates
+- GitHub Pages + custom domain deployment discipline
+- **Plan Mode required** for any ambiguous or high-impact work
+- Specialized sub-agents/personas (Architect, Design, Implementer, QA, Reviewer) via the spawn system
+- One major phase at a time with explicit user approval between phases
+- Clean diffs only (`search_replace` after reading files)
+- Use `todo_write` for all multi-step work
+
+This is not optional. The AGENTS.md document is the law.
+
+---
+
 ## Tech Stack
 
 - **Astro 6.4+** (static output)
@@ -39,12 +56,32 @@ Open http://localhost:4321
 
 ### Key Commands
 
-| Command           | Description                          |
-|-------------------|--------------------------------------|
-| `npm run dev`     | Start local dev server with HMR      |
-| `npm run build`   | Production build → `dist/`           |
-| `npm run preview` | Preview the production build locally |
-| `npm run astro`   | Run Astro CLI commands               |
+| Command                | Description                                          |
+|------------------------|------------------------------------------------------|
+| `npm run dev`          | Start local dev server with HMR                      |
+| `npm run build`        | Production build → `dist/` (run before every deploy) |
+| `npm run preview`      | Preview the production build locally                 |
+| `npm run preview:host` | Preview on local network (for mobile testing)        |
+| `npm run check`        | Run typecheck + full production build (quality gate) |
+| `npm run typecheck`    | TypeScript strict check only                         |
+| `npm run astro`        | Run Astro CLI commands                               |
+
+---
+
+## Quality Gates (Run Before Every Deploy)
+
+These are the minimum gates per AGENTS.md §13:
+
+```bash
+npm run check                    # TypeScript + production build
+```
+
+Recommended additional verification:
+- Lighthouse (Performance / Accessibility / Best Practices / SEO)
+- Manual keyboard + reduced-motion test
+- Visual check on mobile + desktop
+
+Record Lighthouse scores in your deploy notes for evidence.
 
 ---
 
@@ -58,6 +95,7 @@ src/
 ├── content/                      # Future-proof Content Collections schemas
 ├── data/
 │   └── projects.ts               # SINGLE SOURCE OF TRUTH — 7 rich projects
+├── env.d.ts                      # Astro + project global type augmentations
 ├── layouts/
 │   └── BaseLayout.astro          # Full SEO, OG, JSON-LD, schema
 ├── pages/
@@ -65,8 +103,15 @@ src/
 │   └── 404.astro                 # Beautiful cyberpunk 404
 ├── styles/
 │   └── global.css                # THE DESIGN SYSTEM (neon, glitch, scanlines, etc.)
-└── utils/
+├── types/
+│   └── index.ts                  # Central barrel for all domain types (scalable)
+└── utils/                        # Vanilla JS helpers (keep tiny)
 ```
+
+**Root (critical):**
+- `AGENTS.md` — The law. Read before any work.
+- `plan.md` — Created by Architect persona. Living architecture doc.
+- `astro.config.mjs` — Deployment (site/base) is the only thing that changes for GitHub vs custom domain.
 
 ---
 
@@ -154,9 +199,9 @@ Then enable GitHub Pages to deploy from the `/docs` folder on the `main` branch.
 ## Customization Notes
 
 - **Colors & Effects**: All defined in `src/styles/global.css`. Search for `--accent-cyan` and the `@theme` block.
-- **Neural Canvas**: Hero canvas logic lives in the Hero section (to be implemented in next phase). The 404 page has its own self-contained lighter version.
+- **Neural Canvas**: Fully implemented in `Hero.astro` (adaptive, reduced-motion aware) and `404.astro`.
 - **SEO**: Everything lives in `BaseLayout.astro`. Update JSON-LD and meta as needed.
-- **New Projects**: Add to the `projects` array + (optionally) create a matching `.md` file for future static rendering.
+- **New Projects**: Edit `src/data/projects.ts` (single source of truth). Add to the array for new cards + modals.
 
 ---
 
@@ -169,7 +214,18 @@ This site targets:
 - Full keyboard navigation + focus management in the modal
 - Perfect reduced-motion support
 
-Run `npm run build` and inspect `dist/` before every deploy.
+**Pre-Deploy Checklist (AGENTS.md §13 + Reviewer Phase 8):**
+1. `npm run check` (must pass cleanly)
+2. `npm run build` + inspect `dist/` (no stale artifacts)
+3. Run Lighthouse (record scores)
+4. Manual keyboard + reduced-motion test
+5. Visual regression on mobile + desktop
+
+---
+
+## Final Notes
+
+This portfolio was built through a rigorous multi-persona process (Architect → Design → Implementer → QA → Reviewer) following the rules in AGENTS.md. All high-priority issues identified in the final review have been addressed.
 
 ---
 

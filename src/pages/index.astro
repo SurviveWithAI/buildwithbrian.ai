@@ -23,30 +23,32 @@ import Footer from '../components/Footer.astro';
   <!-- 3. FEATURED GROK BUILDS -->
   <ProjectsSection />
 
-  <!-- 4. BUILD PROCESS -->
-  <BuildProcess />
-
-  <!-- 5. GROK BUILD STACK -->
-  <section id="stack" class="relative py-20 bg-elevated border-t border-border-subtle">
-    <div class="max-w-6xl mx-auto px-6">
-      <div class="reveal mb-12">
-        <div class="uppercase tracking-[4px] text-xs text-cyan mb-3">CHAPTER 04 — THE TOOLS</div>
-        <h2 class="text-6xl md:text-7xl font-semibold tracking-[-3.2px]">My Grok Build Stack</h2>
+  <!-- 4. BUILD PROCESS & STACK (unified — exact 6-section structure) -->
+  <section id="process" class="relative py-20 border-t border-border-subtle">
+    <div class="max-w-6xl mx-auto px-6 lg:px-8">
+      <div class="reveal mb-14">
+        <h2 class="text-6xl md:text-7xl font-semibold tracking-[-3.6px]">Build Process &amp; Stack</h2>
       </div>
 
+      <!-- 4-step methodology timeline (preserved full interactivity) -->
+      <BuildProcess />
+
+      <!-- Generous breathing room + strong visual separation (per design direction) -->
+      <div class="mt-16"></div>
+
+      <!-- Icon grid (preserved) -->
       <StackGrid />
     </div>
   </section>
 
-  <!-- 6. LATEST INSIGHTS -->
+  <!-- 5. LATEST INSIGHTS -->
   <section id="insights" class="relative py-20 border-t border-border-subtle">
-    <div class="max-w-6xl mx-auto px-6">
+    <div class="max-w-6xl mx-auto px-6 lg:px-8">
       <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-y-4 reveal">
         <div>
-          <div class="uppercase tracking-[4px] text-xs text-cyan mb-3">CHAPTER 05 — TRANSMISSIONS</div>
-          <h2 class="text-6xl md:text-7xl font-semibold tracking-[-3.2px]">Latest Insights</h2>
+          <h2 class="text-6xl md:text-7xl font-semibold tracking-[-3.6px]">Latest Insights</h2>
         </div>
-        <a href="https://x.com/survivewithai" target="_blank" class="neon-btn !text-xs self-start md:self-auto">VIEW ALL ON X →</a>
+        <a href="https://x.com/survivewithai" target="_blank" rel="noopener noreferrer" class="neon-btn !text-xs self-start md:self-auto">VIEW ALL ON X →</a>
       </div>
 
       <Insights />

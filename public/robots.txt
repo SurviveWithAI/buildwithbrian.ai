@@ -1,0 +1,25 @@
+# buildwithbrian.ai — Robots
+# Production-ready portfolio. All content built with Grok Build (xAI).
+
+User-agent: *
+Allow: /
+
+# SITEMAP CONTROL (Phase 4 SEO Hardening)
+# The sitemap URL is 100% controlled by astro.config.mjs (`site` + `base`).
+# The @astrojs/sitemap integration auto-generates the correct absolute sitemap(s)
+# (sitemap-index.xml + sitemap-0.xml) at build time in dist/.
+#
+# GitHub Pages target → https://survivewithai.github.io/buildwithbrian.ai/sitemap-index.xml
+# Custom domain target   → https://buildwithbrian.ai/sitemap-index.xml
+#
+# Search engines discover the sitemap via this file, the generated HTML <link> in <head>,
+# or direct submission in Google Search Console / Bing Webmaster Tools.
+#
+# TO UPDATE: Edit ONLY astro.config.mjs site/base values.
+# Do NOT hardcode or pin URLs in this file — the example below is illustrative only
+# and becomes stale after a domain switch. The integration handles everything automatically.
+#
+# (Softened/hardcode removed per plan — prefer config-driven discovery.)
+
+# Example (current GH Pages build output; auto-managed, do not rely on this line):
+# Sitemap: https://survivewithai.github.io/buildwithbrian.ai/sitemap-index.xml

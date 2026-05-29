@@ -49,25 +49,25 @@ import type { Project } from '../../data/projects';
 
       <!-- Problem -->
       <div>
-        <div class="uppercase tracking-[3px] text-xs text-cyan mb-3">THE PROBLEM</div>
+        <div class="uppercase tracking-[3px] text-xs text-cyan/80 mb-3">THE PROBLEM</div>
         <div id="modal-problem" class="text-[15px] text-secondary leading-relaxed"></div>
       </div>
 
       <!-- How Grok Build Was Used -->
       <div class="bg-card border border-cyan/20 p-7 rounded">
-        <div class="uppercase tracking-[3px] text-xs text-cyan mb-3">HOW GROK BUILD WAS USED</div>
+        <div class="uppercase tracking-[3px] text-xs text-cyan/80 mb-3">HOW GROK BUILD WAS USED</div>
         <div id="modal-grok-role" class="text-[15px] text-secondary leading-relaxed"></div>
       </div>
 
       <!-- Results -->
       <div>
-        <div class="uppercase tracking-[3px] text-xs text-cyan mb-3">RESULTS</div>
+        <div class="uppercase tracking-[3px] text-xs text-cyan/80 mb-3">RESULTS</div>
         <ul id="modal-results" class="space-y-2 text-[15px]"></ul>
       </div>
 
       <!-- Tech Stack -->
       <div>
-        <div class="uppercase tracking-[3px] text-xs text-cyan mb-3">TECH STACK</div>
+        <div class="uppercase tracking-[3px] text-xs text-cyan/80 mb-3">TECH STACK</div>
         <div id="modal-tech" class="flex flex-wrap gap-2"></div>
       </div>
 
@@ -85,6 +85,9 @@ import type { Project } from '../../data/projects';
 
   const modal = document.getElementById('project-modal') as HTMLDivElement;
   const closeBtn = document.getElementById('modal-close') as HTMLButtonElement;
+
+  // Focus trap handler reference (for robust add/remove)
+  let focusTrapHandler: ((e: FocusEvent) => void) | null = null;
 
   function openModal(project: any) {
     currentProject = project;
@@ -119,7 +122,7 @@ import type { Project } from '../../data/projects';
       const a = document.createElement('a');
       a.href = project.demoUrl;
       a.target = '_blank';
-      a.rel = 'noopener';
+      a.rel = 'noopener noreferrer';
       a.className = linkClasses;
       a.textContent = 'VIEW LIVE DEMO';
       linksContainer.appendChild(a);
@@ -129,7 +132,7 @@ import type { Project } from '../../data/projects';
       const a = document.createElement('a');
       a.href = project.repoUrl;
       a.target = '_blank';
-      a.rel = 'noopener';
+      a.rel = 'noopener noreferrer';
       a.className = 'neon-btn-teal !text-xs px-6 py-2.5';
       a.textContent = 'VIEW SOURCE CODE';
       linksContainer.appendChild(a);
@@ -139,7 +142,7 @@ import type { Project } from '../../data/projects';
       const a = document.createElement('a');
       a.href = project.xUrl;
       a.target = '_blank';
-      a.rel = 'noopener';
+      a.rel = 'noopener noreferrer';
       a.className = linkClasses;
       a.textContent = 'READ THE THREAD ON X';
       linksContainer.appendChild(a);
@@ -150,14 +153,37 @@ import type { Project } from '../../data/projects';
     modal.classList.add('open');
     document.body.style.overflow = 'hidden';
 
-    // Focus management
+    // Focus management + robust trap (High a11y)
     closeBtn.focus();
+
+    // Remove any prior stray trap
+    if (focusTrapHandler) {
+      document.removeEventListener('focusin', focusTrapHandler);
+    }
+    // Redirect any focus that lands outside the modal back inside (handles edge cases beyond keydown Tab)
+    focusTrapHandler = (e: FocusEvent) => {
+      if (!modal.classList.contains('open')) return;
+      if (!modal.contains(e.target as Node)) {
+        // Stray focus detected — pull back to close button (first reliable control)
+        closeBtn.focus();
+      }
+    };
+    document.addEventListener('focusin', focusTrapHandler);
+
+    // Dialog open is announced to SR via role="dialog" + aria-labelledby (title) + initial focus on close control.
+    // (No extra live region needed; standard dialog pattern.)
   }
 
   function closeModal() {
     modal.classList.remove('open');
     modal.classList.add('hidden');
     document.body.style.overflow = '';
+
+    // Clean up robust focus trap
+    if (focusTrapHandler) {
+      document.removeEventListener('focusin', focusTrapHandler);
+      focusTrapHandler = null;
+    }
 
     // Return focus to the card that opened it (if possible)
     const trigger = document.querySelector(`[data-project-id="${currentProject?.id}"]`) as HTMLElement;
@@ -180,11 +206,15 @@ import type { Project } from '../../data/projects';
       closeModal();
     }
 
-    // Basic focus trap
+    // Basic focus trap (keydown Tab cycle) — augmented by focusin stray redirect above for robustness
     if (e.key === 'Tab') {
-      const focusable = modal.querySelectorAll('button, a[href]');
-      const first = focusable[0] as HTMLElement;
-      const last = focusable[focusable.length - 1] as HTMLElement;
+      const focusable = modal.querySelectorAll<HTMLElement>(
+        'button, [href], input:not([disabled]), select, textarea, [tabindex]:not([tabindex="-1"])'
+      );
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (!first || !last) return;
 
       if (e.shiftKey && document.activeElement === first) {
         e.preventDefault();

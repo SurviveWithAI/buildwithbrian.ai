@@ -16,11 +16,10 @@ import { projects, categories, filterProjects, type Project, type Category } fro
 ---
 
 <section id="projects" class="relative py-20 bg-elevated border-t border-border-subtle">
-  <div class="max-w-7xl mx-auto px-6">
+  <div class="max-w-7xl mx-auto px-6 lg:px-8">
     <!-- Header -->
     <div class="reveal mb-9 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-y-5">
       <div>
-        <div class="uppercase tracking-[4.5px] text-xs text-cyan mb-4">CHAPTER 02 — THE ARSENAL</div>
         <h2 class="text-6xl md:text-7xl font-semibold tracking-[-3.6px]">Featured Builds</h2>
       </div>
       <p class="max-w-[340px] text-secondary text-[15px]">
@@ -36,6 +35,7 @@ import { projects, categories, filterProjects, type Project, type Category } fro
           <button 
             class={`filter-pill ${cat === 'All' ? 'active' : ''}`}
             data-category={cat}
+            aria-pressed={cat === 'All'}
           >
             {cat}
           </button>
@@ -48,7 +48,8 @@ import { projects, categories, filterProjects, type Project, type Category } fro
           type="text" 
           id="project-search"
           placeholder="Search projects or tech..." 
-          class="w-full bg-card border border-border-subtle text-sm font-mono px-4 py-2.5 placeholder:text-muted focus:border-cyan focus:outline-none rounded"
+          aria-label="Search projects or technologies"
+          class="w-full bg-card border border-border-subtle text-sm font-mono px-4 py-2.5 placeholder:text-muted focus:border-cyan rounded"
           autocomplete="off"
         />
         <div class="absolute right-3.5 top-3 text-muted pointer-events-none">
@@ -56,6 +57,14 @@ import { projects, categories, filterProjects, type Project, type Category } fro
         </div>
       </div>
     </div>
+
+    <!-- Live region for screen reader announcements (WCAG live regions for dynamic filter/search results) -->
+    <div 
+      id="projects-live" 
+      aria-live="polite" 
+      aria-atomic="true" 
+      class="sr-only"
+    ></div>
 
     <!-- Projects Grid -->
     <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
@@ -113,13 +122,37 @@ import { projects, categories, filterProjects, type Project, type Category } fro
     } else {
       emptyState.classList.add('hidden');
     }
+
+    // Update live region for screen readers (Critical a11y remediation)
+    const live = document.getElementById('projects-live');
+    if (live) {
+      const searchTerm = currentSearch.trim();
+      let msg: string;
+      if (visibleCount === 0) {
+        msg = 'No projects match your filters and search. Try a different term or category.';
+      } else {
+        msg = `${visibleCount} project${visibleCount === 1 ? '' : 's'} shown`;
+        if (currentFilter !== 'All') {
+          msg += ` in ${currentFilter}`;
+        }
+        if (searchTerm) {
+          msg += ` matching '${searchTerm}'`;
+        }
+        msg += '.';
+      }
+      live.textContent = msg;
+    }
   }
 
   // Category filter buttons
   filtersContainer.querySelectorAll('button').forEach((btn) => {
     btn.addEventListener('click', () => {
-      filtersContainer.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      filtersContainer.querySelectorAll('button').forEach(b => {
+        b.classList.remove('active');
+        b.setAttribute('aria-pressed', 'false');
+      });
       btn.classList.add('active');
+      btn.setAttribute('aria-pressed', 'true');
 
       currentFilter = btn.getAttribute('data-category') || 'All';
       applyFilters();
@@ -157,6 +190,9 @@ import { projects, categories, filterProjects, type Project, type Category } fro
       }
     });
   });
+
+  // Initial live region announcement for screen readers (ensures SR users hear result count on load)
+  applyFilters();
 </script>
 
 <!-- Make full project data available to the modal + any future needs -->

@@ -4,7 +4,7 @@
  * Future-proof foundation. Projects & Insights can be authored as .md later.
  */
 
-import { defineCollection, z } from 'astro:content';
+import { defineCollection, z, type InferEntrySchema } from 'astro:content';
 
 const projectSchema = z.object({
   id: z.string(),
@@ -46,6 +46,7 @@ export const collections = {
   }),
 };
 
-// Export the inferred types for use in data/projects.ts and components
-export type ProjectFrontmatter = z.infer<typeof projectSchema>;
-export type InsightFrontmatter = z.infer<typeof insightSchema>;
+// Export the inferred types for use in data/projects.ts and components.
+// Using Astro's official InferEntrySchema (the recommended, strict-TS-compatible way).
+export type ProjectFrontmatter = InferEntrySchema<'projects'>;
+export type InsightFrontmatter = InferEntrySchema<'insights'>;

@@ -9,6 +9,9 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "preview:host": "astro preview --host",
+    "check": "npm run typecheck && npm run build",
+    "typecheck": "tsc --noEmit",
     "astro": "astro"
   },
   "dependencies": {
@@ -16,5 +19,8 @@
     "@tailwindcss/vite": "^4.3.0",
     "astro": "^6.4.2",
     "tailwindcss": "^4.3.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.3"
   }
 }

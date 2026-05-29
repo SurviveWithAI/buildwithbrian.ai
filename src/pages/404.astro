@@ -38,8 +38,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </p>
 
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="/" class="neon-btn px-10 py-4 text-base">RETURN TO THE MAINFRAME</a>
-        <a href="https://x.com/survivewithai" target="_blank" class="neon-btn-teal px-10 py-4 text-base">TRANSMIT A MESSAGE</a>
+        <a href={import.meta.env.BASE_URL || '/'} class="neon-btn px-10 py-4 text-base">RETURN TO THE MAINFRAME</a>
+        <a href="https://x.com/survivewithai" target="_blank" rel="noopener noreferrer" class="neon-btn-teal px-10 py-4 text-base">TRANSMIT A MESSAGE</a>
       </div>
 
       <div class="mt-16 text-[10px] font-mono tracking-[4px] text-muted/50">
@@ -57,6 +57,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     const ctx = canvas.getContext('2d', { alpha: true });
     if (!ctx) return;
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches || !!(window as any).__REDUCED_MOTION;
 
     let width = 0, height = 0, dpr = 1;
     let nodes: Array<{x: number; y: number; vx: number; vy: number; r: number}> = [];
@@ -151,6 +153,25 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       (window as any).__404_mouse_y = e.clientY - rect.top;
     }
 
+    // Reduced motion: static fallback only (no animation, no mouse-driven updates, mirrors Hero canvas pattern)
+    // IMPORTANT: check and return BEFORE attaching listeners or declaring handlers (prevents double-binding + redeclaration)
+    if (prefersReduced) {
+      resize();
+      // One-time static render (no velocities, no rAF loop)
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = 'rgba(10,10,10,0.65)';
+      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = '#00f5ff';
+      for (const n of nodes) {
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, n.r * 0.85, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      // No mouse listener or animation loop attached
+      return;
+    }
+
+    // Non-reduced: attach listeners + start animation exactly once
     canvas.addEventListener('mousemove', onMouseMove, { passive: true });
 
     const onResize = () => {

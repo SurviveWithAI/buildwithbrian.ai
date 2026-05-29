@@ -107,6 +107,7 @@
     let animationFrame = 0;
     let lastPacketTime = 0;
     let isPaused = false;
+    let resizeTimeout: number | undefined;
 
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -191,10 +192,12 @@
     setTimeout(forceInitialResize, 400);
 
     window.addEventListener('load', safeResize, { once: true });
-    window.addEventListener('resize', () => {
+
+    function handleHeroResize() {
       clearTimeout(resizeTimeout);
       resizeTimeout = window.setTimeout(safeResize, 60);
-    }, { passive: true });
+    }
+    window.addEventListener('resize', handleHeroResize, { passive: true });
 
     // Mouse state
     let mouseX = width * 0.5;
@@ -432,7 +435,7 @@
     // Cleanup hook for Astro navigation (future-proof)
     document.addEventListener('astro:before-swap', () => {
       cancelAnimationFrame(animationFrame);
-      window.removeEventListener('resize', onResize);
+      window.removeEventListener('resize', handleHeroResize);
       document.removeEventListener('visibilitychange', handleVisibility);
     }, { once: true });
   }

@@ -1,5 +1,25 @@
 {
   "extends": "astro/tsconfigs/strict",
-  "include": [".astro/types.d.ts", "**/*"],
-  "exclude": ["dist"]
+  "compilerOptions": {
+    /* Production-grade strictness (beyond Astro's base strict preset) */
+    "verbatimModuleSyntax": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    /* exactOptionalPropertyTypes disabled: clashes with Astro Content + Zod schema inference in strict mode.
+       All other ultra-strict flags remain active for maximum type safety. */
+    // "exactOptionalPropertyTypes": true,
+
+    /* Path aliases for clean scalable imports (future-proof) */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@/components/*": ["src/components/*"],
+      "@/data/*": ["src/data/*"],
+      "@/types/*": ["src/types/*"],
+      "@/utils/*": ["src/utils/*"]
+    }
+  },
+  "include": [".astro/types.d.ts", "src/env.d.ts", "**/*"],
+  "exclude": ["dist", "node_modules"]
 }
